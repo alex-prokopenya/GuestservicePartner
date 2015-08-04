@@ -1,0 +1,122 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+    {
+        @Html.AntiForgeryToken()      
+    }
+}
+
+<nav role="navigation" class="navbar navbar-inverse" style="z-index:10;">
+    <div class="container">
+	
+	
+	            @{
+                var languages = Sm.System.Mvc.Language.UrlLanguage.SupportedLanguages;
+                var language = Sm.System.Mvc.Language.UrlLanguage.CurrentLanguage;
+                var values = Sm.System.Mvc.HttpRequestBaseExtensions.QueryStringAsRouteValues(Request);  
+				
+                var languagesDict = new System.Collections.Generic.Dictionary<string, string>();
+                languagesDict.Add("ru", "Русский");
+                languagesDict.Add("en", "English");
+                languagesDict.Add("el", "Elenika");
+                languagesDict.Add("de", "Deutsch");
+				languagesDict.Add("es", "Spain");
+                languagesDict.Add("fr", "France");
+                if (languages != null && languages.Length > 1)
+                {
+                    <li class="dropdown bk-navbar-language">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">@languagesDict[language] &nbsp;<b class="caret"></b></a>
+                        <ul class="dropdown-menu" style="min-width:0;">
+                            @foreach (var lang in languages.Where(m => m != language))
+                            {
+                                values["language"] = lang;
+                                <li>
+                                    <a href="@Url.RouteUrl(values)">
+                                        @languagesDict[lang]
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }        
+            }
+
+	
+	
+	
+	
+        <div class="navbar-header bk-navbar-header"
+		style="
+    left: 50%;
+    position: relative;
+    margin-left: -69px;
+    margin-top: -15px;
+">
+            <!-- @{ Html.RenderAction("PageLogo", "customization"); } -->
+			<a href="/guestservice_design/"> <img id="img_logo" src="@Url.Content("~/images/new/logo.png")" style="height: 40px; margin-top: -2px;"></a>
+            <button data-target=".navbar-ex1-collapse" data-toggle="collapse" class="navbar-toggle" type="button" style="
+
+    position: relative;
+    left: 50%;
+    margin-top: -54px;
+    right: 0px;
+    display: block;
+    margin-left: -55px;
+    float: none;
+
+">
+                <span class="sr-only">@SharedStrings.ResourceManager.Get("NavigatorTitle")</span>
+				
+                <img src="@Url.Content("~/images/menu.png")" />
+				
+            </button> 
+        </div>  
+        <div class="collapse navbar-collapse navbar-ex1-collapse"> 
+        
+            <ul class="nav navbar-nav navbar-right" style="
+    margin-top: -23px;
+">
+            @{ Html.RenderAction("PageNavigation", "customization"); }
+			
+			
+            @if (User.Identity.IsAuthenticated)
+            {        
+            <li class="dropdown bk-navbar-user">
+                <a data-toggle="dropdown" class="dropdown-toggle"  href="#">@User.Identity.Name <b class="caret"></b></a>                                                         
+                <ul class="dropdown-menu" style="min-width:0;">
+                    <li><a href="@Url.Action("order", "guest")">@SharedStrings.ResourceManager.Get("ToolbarGuestOrderLink")</a></li>
+                    <li class="divider" />
+                    <li><a href="javascript: $('#logoutForm').submit();">@SharedStrings.ResourceManager.Get("NavigatorLogout")</a></li>
+                </ul>
+            </li>
+            }
+            else
+            {
+                <li>
+                    <a  href="@Url.Action("login", "account", new { returnUrl = Url.Action("index") })">@SharedStrings.ResourceManager.Get("ToolbarSignIn")</a>
+                </li>
+            }
+              
+            <script type="text/javascript">
+                @{ 
+                    var cart = GuestService.Models.Booking.ShoppingCart.CreateFromSession(Session);  
+                }
+                $(function () {
+                    if(site && site.vm && site.vm.shoppingcart) {
+                        site.vm.shoppingcart.setOrderCount(@cart.Orders.Count);
+                    }
+                });  
+            </script>
+                                       
+            <li id="shoppingcart_container" class="bk-navbar-shopping-cart">
+                <a href="@Url.Action("index", "booking")">@SharedStrings.ResourceManager.Get("NavigatorMyOrders") <span data-bind="if: showOrderCount"><span class="badge" data-bind="text: orderCount"></span></span></a>
+            </li>            
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+    
