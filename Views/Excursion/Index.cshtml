@@ -250,7 +250,7 @@
             },
             prepareDescription = function (d) { 
 				//alert(d.excursion.text);
-				d.text =  "some text about route";			
+                d.text =  d.excursion.text;			
                 if (d.pictures) {
                     for (var i = 0; i < d.pictures.length; i++) {
                         d.pictures[i].largeImageUrl = excursionLargeImageBaseUrl.replace('.id.', d.excursion.id).replace('.i.', i);
