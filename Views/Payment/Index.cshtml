@@ -1,160 +1,127 @@
 ﻿@model GuestService.Models.Payment.PaymentContext
 
 @{
-    ViewBag.Title = PaymentStrings.ResourceManager.Get("PaymentTitle");
+    ViewBag.Title = PaymentStrings.Get("PaymentTitle");
 }
-<div class="container">    
-    <div class="row bk-main">           
-        <div class="col-lg-12">              
-            <h1 class="page-header">@ViewBag.Title</h1>
-            @if (GuestService.Settings.IsShowBreadCrumb)
-            {
-            <ol class="breadcrumb">          
-                <li><a href="@Context.Request.ApplicationPath.ToString()">@PaymentStrings.ResourceManager.Get("PaymentGuestService")</a></li>
-                <li class="active">@ViewBag.Title</li>
-            </ol>
-            }
-        </div>                      
-
+<div class="container">
+    <div class="row bk-main">
         @if (Model.Reservation != null && Model.Reservation.claimId != null)
         {
-            <div class="col-lg-12">  
-                <div class="form-inline">
-                    <div class="form-group" style="vertical-align: baseline;">
-                        <h4 style="color:#b7b7b7;">@PaymentStrings.ResourceManager.Get("PaymentOrderTitle")</h4>
-                    </div>
-                    <div class="form-group" style="vertical-align: baseline;">
-                    <h2 class="media-heading" style="color: #777777;">@Model.Reservation.claimId</h2>                     
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-12">
-            @if (Model.Reservation.orders != null)
-            {
-                foreach (var order in Model.Reservation.orders)
+            <!--  <div class="col-lg-12" >
+                 <div class="form-inline">
+                     <div class="form-group" style="vertical-align: baseline;">
+                         <h4 style="color:#b7b7b7;">@PaymentStrings.Get("PaymentOrderTitle")</h4>
+                     </div>
+                     <div class="form-group" style="vertical-align: baseline;">
+                     <h2 class="media-heading" style="color: #777777;">@Model.Reservation.claimId</h2>
+                     </div>
+                 </div>
+             </div>
+             -->
+            <div class="col-lg-12" style="border-bottom: dotted 2px #083b82; margin-bottom: 10px;">
+                @if (Model.Reservation.orders != null)
                 {
-                    if (order.status != null && order.status.id == 1)
+                    foreach (var order in Model.Reservation.orders)
                     {
-                        Html.RenderPartial("Controls\\ReservationOrder2", order);
+                        if (order.status != null && order.status.id == 1)
+                        {
+                            Html.RenderPartial("Controls\\ReservationOrder2", order);
+                        }
                     }
                 }
-            }
             </div>
-            
+
             if (Model.Reservation.action != null && Model.Reservation.action.canshowprice == true)
             {
-                <div class="col-lg-12">     
-                    <h3 class="panel-title price" style="font-size: 2em;">
-                        <span style="color:#b7b7b7;">@PaymentStrings.ResourceManager.Get("PaymentTotal")</span>        
-                        <span style="color:#777777;">@Model.Reservation.price.total.ToString("### ### ### ##0.00") @Model.Reservation.price.currency</span>
-                    </h3>
-                </div>
-                <div class="col-lg-12">  
-                    <h3 class="panel-title price" style="font-size: 2em;">
-                        <span style="color:#b7b7b7;">@PaymentStrings.ResourceManager.Get("PaymentToPay")</span>       
-                        <span style="color:#777777;">@Model.Reservation.price.topay.ToString("### ### ### ##0.00") @Model.Reservation.price.currency</span>
-                    </h3>  
-                </div>
-                <div class="clearfix" style="margin-bottom:20px;"></div>	
-                <div class="col-lg-12">  
+                <!--
+                                <div class="col-lg-12" style="text-align: center;border-bottom: solid 1px #083b82;padding-bottom: 10px;">
+                                    <span class="ex_pay_title">У вас есть купон? </span>
+                                    <input type="text" class="ex_pay_input" > <input type="button" class="ex_pay_button" Value="Проверить купон"> <br>
+                                </div>
+                -->
 
-                @if (Model.Reservation.price != null && Model.Reservation.price.topay <= 0)
+                if (Model.Reservation.price != null && Model.Reservation.price.topay <= 0)
                 {
-                    <div><h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.ResourceManager.Get("PaymentAlreadyPaid")</h3></div>
+                    <div><h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.Get("PaymentAlreadyPaid")</h3></div>
                     if (Model.Reservation != null && Model.Reservation.action != null && Model.Reservation.action.canprintvoucher == true)
                     {
                         <div>
-                            <a class="btn btn-large btn-primary" href="@Url.Action("printorder", "guest", new { id = Model.Reservation.claimId })">@GuestStrings.ResourceManager.Get("PrintVoucherButton")</a>
-                        </div>  
+                            <a class="btn btn-large btn-primary" href="@Url.Action("printorder", "guest", new { id = Model.Reservation.claimId })">@GuestStrings.Get("PrintVoucherButton")</a>
+                        </div>
                     }
                 }
                 else if (Model.Reservation.confirmation != null && Model.Reservation.confirmation.id != 2)
                 {
                     <div>
-                        <h2 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.ResourceManager.Get("PaymentReservationStatusTitle") @Model.Reservation.confirmation.description </h2>
-                        <h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.ResourceManager.Get("PaymentAfterConfirmationMessage")</h3>
+                        <h2 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.Get("PaymentReservationStatusTitle") @Model.Reservation.confirmation.description </h2>
+                        <h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.Get("PaymentAfterConfirmationMessage")</h3>
                     </div>
                 }
                 else if (Model.Reservation.action != null && Model.Reservation.action.canpay == true)
                 {
                     if (Model.PaymentModes != null && Model.PaymentModes.Count > 0)
                     {
-                        <h4 style="font-weight:bold;">@PaymentStrings.ResourceManager.Get("PaymentMethod")</h4>  
-                
-                        foreach (var paymentMode in Model.PaymentModes)
+                        using (Html.BeginForm("processing", "payment"))
                         {
-                            if (!string.IsNullOrEmpty(paymentMode.processing))
-                            {
-                                using (Html.BeginForm("processing", "payment"))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    @Html.Hidden("claimId", Model.Reservation.claimId)
-                                    @Html.Hidden("paymentId", paymentMode.id)
-                                    <div class="col-lg-6" style="padding-left:0;">
-                                        <div class="media" style="margin-bottom: 15px;">
-                                            <span class="pull-left" >
-                                                @if ((paymentMode.processing ?? "").ToLowerInvariant() == "paypal")
-                                                {
-                                                    <img class="media-object" src="@Url.Content("~/images/paypal.png")" alt="@paymentMode.name" />
-                                                }
-                                                else if ((paymentMode.processing ?? "").ToLowerInvariant() == "bank")
-                                                {
-                                                    <img class="media-object" src="@Url.Content("~/images/bank.png")" alt="@paymentMode.name" />
-                                                }
-                                                else if ((paymentMode.processing ?? "").ToLowerInvariant() == "uniteller")
-                                                {
-                                                    <img class="media-object" src="@Url.Content("~/images/uniteller.png")" alt="@paymentMode.name" />
-                                                }
-                                            </span> 
-
-                                            <div class="media-body">                                                                
-                                                <h3 class="media-heading" style="color: #777777; margin-bottom:0;  text-transform: uppercase;">@paymentMode.name</h3>                     
-                                                <div style="color: #777777;">                                        
-                                                    @if (paymentMode.comission != null)
-                                                    {
-                                                        <div style="color:#b7b7b7;">@PaymentStrings.ResourceManager.Get("PaymentComission")&nbsp;@paymentMode.comission.total.ToString("### ### ### ##0.00") @paymentMode.comission.currency</div>
-                                                    }
-                                                    @if (paymentMode.payrest != null)
-                                                    {
-                                                        <strong>@PaymentStrings.ResourceManager.Get("PaymentToPay")&nbsp;@paymentMode.payrest.total.ToString("### ### ### ##0.00") @paymentMode.payrest.currency</strong>                                        
-                                                    }       
-                                                    @if ((paymentMode.processing ?? "").ToLowerInvariant() == "paypal")
-                                                    {
-                                                        <br /><a href="#" onclick="$(this).closest('form').submit()" style="font-weight:bold;">@PaymentStrings.ResourceManager.Get("PaymentPayButton")</a>
-                                                    }
-                                                    else if ((paymentMode.processing ?? "").ToLowerInvariant() == "bank")
-                                                    {
-                                                        <br /><a href="#" onclick="$(this).closest('form').submit()" style="font-weight:bold;">@PaymentStrings.ResourceManager.Get("PaymentBankBill")</a>
-                                                    }
-                                                    else if ((paymentMode.processing ?? "").ToLowerInvariant() == "uniteller")
-                                                    {
-                                                        <br /><a href="#" onclick="$(this).closest('form').submit()" style="font-weight:bold;">@PaymentStrings.ResourceManager.Get("PaymentPayButton")</a>
-                                                    }                                           
-                                                </div>
+                            <div class="col-lg-12">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 33%; vertical-align: top;">
+                                            <div style="padding-right: 30px;">
+                                                <span class="ex_pay_title">Pay options</span><br><br>
+                                                1. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.<br>
+                                                2. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.<br>
+                                                3. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.
                                             </div>
-                                                                              
-                                        </div>  
-                                    </div>                         
-                                }
-                            }
-                        }
+                                        </td>
+                                        <td style="width: 33%;">
+                                            <span class="ex_pay_title"> <!-- @PaymentStrings.Get("PaymentMethod") --> Способ оплаты</span>
+
+                                            </span>
+
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("claimId", Model.Reservation.claimId)
+
+                                            @foreach (var paymentMode in Model.PaymentModes)
+                                            {
+                                                if (!string.IsNullOrEmpty(paymentMode.processing))
+                                                {
+                                                    @Html.Hidden("paymentId", paymentMode.id)
+                                                    <div class="col-lg-6" style="padding-left:0; width: auto; float: none;">
+                                                        <div class="media" style="margin-bottom: 15px;">
+                                                            <br>
+                                                            <div class="media-body" style="display: inline-table;">
+                                                                <input type="radio" name="payment_mode" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox">
+                                                                <label for="@paymentMode.id" class="css-label radGroup2">@paymentMode.name</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>           }
+                                            }
+
+                                        </td>
+                                        <td style="text-align: right; width: 34%;">
+                                            <input type="radio" name="agree" id="agree" class="ex_pay_checkbox">
+                                            <label for="agree" class="css-label radGroup2" style="font-size: 16px;">Я согласен с условиями пользования сайтом</label><br>
+                                            <button style=" margin-top: 30px;width: 100%;font-size: 25px;color: #000;" value="" type="submit" class="btn btn-primary">Pay Now</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>}
                     }
                 }
-                </div>
             }
             else
             {
                 <div class="col-lg-12">
-                    <h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.ResourceManager.Get("PaymentReservationCannotPay")</h3>
+                    <h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.Get("PaymentReservationCannotPay")</h3>
                 </div>
             }
         }
         else
         {
             <div class="col-lg-12">
-                <h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.ResourceManager.Get("PaymentReservationNotFound")</h3>
+                <h3 style="color:#8c8c8c; margin-top:0;">@PaymentStrings.Get("PaymentReservationNotFound")</h3>
             </div>
         }
-    </div>  
+    </div>
 </div>
