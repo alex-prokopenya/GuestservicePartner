@@ -341,7 +341,10 @@
                         <div class="media" style="margin-bottom: 15px;">
                             <br>
                             <div class="media-body" style="display: inline-table;">
+
                                 <input type="radio" name="payment_mode" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox">
+                                
+                                
                                 <label for="@paymentMode.id" class="css-label radGroup2">@paymentMode.name</label>
                             </div>
                         </div>
@@ -352,6 +355,8 @@
     }
 
     <input type="radio" name="agree" id="agree" class="ex_pay_checkbox">
+
     <label for="agree" class="css-label radGroup2" style="font-size: 16px;">Я согласен с условиями пользования сайтом</label><br>
+    
     <button style=" margin-top: 30px;width: 100%;font-size: 25px;color: #000;" value="" type="submit" class="btn btn-primary">Pay Now</button>
 </div>
