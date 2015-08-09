@@ -323,4 +323,35 @@
     </div>
 </div>
 
-            
+<div class="col-lg-12">
+    @if (Model.PaymentModes != null && Model.PaymentModes.Count > 0)
+    {
+        <span class="ex_pay_title"> <!-- @PaymentStrings.Get("PaymentMethod") --> Способ оплаты</span>
+        using (Html.BeginForm("processing", "payment"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("claimId", 1)
+
+            foreach (var paymentMode in Model.PaymentModes)
+            {
+                if (!string.IsNullOrEmpty(paymentMode.processing))
+                {
+                    @Html.Hidden("paymentId", paymentMode.id)
+                    <div class="col-lg-6" style="padding-left:0; width: auto; float: none;">
+                        <div class="media" style="margin-bottom: 15px;">
+                            <br>
+                            <div class="media-body" style="display: inline-table;">
+                                <input type="radio" name="payment_mode" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox">
+                                <label for="@paymentMode.id" class="css-label radGroup2">@paymentMode.name</label>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    }
+
+    <input type="radio" name="agree" id="agree" class="ex_pay_checkbox">
+    <label for="agree" class="css-label radGroup2" style="font-size: 16px;">Я согласен с условиями пользования сайтом</label><br>
+    <button style=" margin-top: 30px;width: 100%;font-size: 25px;color: #000;" value="" type="submit" class="btn btn-primary">Pay Now</button>
+</div>
