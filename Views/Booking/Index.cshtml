@@ -1,24 +1,24 @@
 ﻿@model GuestService.Models.Booking.BookingContext
 
 @{
-    ViewBag.Title = BookingStrings.ResourceManager.Get("Title");
+    ViewBag.Title = BookingStrings.Get("Title");
 }
 
 <script type="text/javascript">
-    function executeQuery() {  
+    function executeQuery() {
         $.ajax({
             url: '@Url.Action("agreement", "booking")',
             cache: false,
-            success: function(data) {	       
-                if(data) {                                                        
-                    $('#confirmRulesInfo div#confirmRulesBody').html(data);             
-                    $('#confirmRulesInfo').modal({ show: true });                    
-                }                
+            success: function(data) {
+                if(data) {
+                    $('#confirmRulesInfo div#confirmRulesBody').html(data);
+                    $('#confirmRulesInfo').modal({ show: true });
+                }
             },
             error: function(x, t, m) {
-                $('#orderResult div#errorOrderResult').show();             
-                $('#orderResult div#okOrderResult').hide();             
-                $('#orderResult').modal({ show: true });            
+                $('#orderResult div#errorOrderResult').show();
+                $('#orderResult div#okOrderResult').hide();
+                $('#orderResult').modal({ show: true });
             }
         });
         return false;
@@ -48,39 +48,39 @@
         });
     });
 </script>
-<div class="container">      
-    <div class="row bk-main">         
+<div class="container">
+    <div class="row bk-main">
         <div class="col-lg-12">
             <h1 class="page-header">@ViewBag.Title</h1>
             @if (GuestService.Settings.IsShowBreadCrumb)
             {
-            <ol class="breadcrumb">          
-                <li><a href="@Url.Action("index", "welcome")">@BookingStrings.ResourceManager.Get("GuestServiceTitle")</a></li>            
-                <li><a href="@Url.Action("index", "excursion")">@BookingStrings.ResourceManager.Get("BookingMenuTitle")</a></li>                  
-                <li class="active">@ViewBag.Title</li>
-            </ol>
+                <ol class="breadcrumb">
+                    <li><a href="@Url.Action("index", "welcome")">@BookingStrings.Get("GuestServiceTitle")</a></li>
+                    <li><a href="@Url.Action("index", "excursion")">@BookingStrings.Get("BookingMenuTitle")</a></li>
+                    <li class="active">@ViewBag.Title</li>
+                </ol>
             }
-        </div>     
-                    
+        </div>
+
         @if (Model.Form.Orders.Count == 0)
         {
-            <div class="col-lg-12">        
-                <h3 style="color:#8c8c8c;">@BookingStrings.ResourceManager.Get("EmptyCart_1")&nbsp;<a href="@Url.Action("index", "excursion")">@BookingStrings.ResourceManager.Get("EmptyCart_2")</a></h3>
-                <div class="clearfix" style="margin-bottom:10px;"></div>            
-                <a href="@Context.Request.ApplicationPath.ToString()" data-bind="click: navigateBackClick">@BookingStrings.ResourceManager.Get("GoBack")</a>
+            <div class="col-lg-12">
+                <h3 style="color:#8c8c8c;">@BookingStrings.Get("EmptyCart_1")&nbsp;<a href="@Url.Action("index", "excursion")">@BookingStrings.Get("EmptyCart_2")</a></h3>
+                <div class="clearfix" style="margin-bottom:10px;"></div>
+                <a href="@Context.Request.ApplicationPath.ToString()" data-bind="click: navigateBackClick">@BookingStrings.Get("GoBack") 123 </a>
             </div>
         }
         else
         {
             using (Html.BeginForm("index", "booking", FormMethod.Post, new { id = "actionForm" }))
             {
-                @Html.AntiForgeryToken()  
+                @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.Form.Action, Model.Form.Action)
                 @Html.HiddenFor(m => m.Form.RemoveOrderId, Model.Form.RemoveOrderId)
 
                 @Html.HiddenFor(m => m.Form.PartnerAlias, Model.Form.PartnerAlias)
                 @Html.HiddenFor(m => m.Form.PartnerSessionID, Model.Form.PartnerSessionID)
-                      
+
                 if (Model.Form.PromoCodes != null && Model.Form.PromoCodes.Length > 0)
                 {
                     for (int index = 0; index < Model.Form.PromoCodes.Length; index++)
@@ -92,82 +92,92 @@
                 foreach (var order in Model.Form.Orders)
                 {
                     var errors = Model.Reservation.GetOrderErrors(order.ReservationOrder);
-            
-                    <div class="col-lg-12">                    
-                        @Html.Partial("Controls\\ReservationOrder2", order.ReservationOrder)                    
-                    </div>            
-    
+
+                    <div class="col-lg-12">
+                        @Html.Partial("Controls\\ReservationOrder2", order.ReservationOrder)
+                    </div>
+
                     if (errors != null && errors.Count > 0)
-                    {    
-                        <div class="col-lg-12" >                    
-                        @foreach (var error in errors)
-                        {
-                            <div class="bs-callout bs-callout-danger">                    
-                                <h4 style="margin-bottom:5px;">@BookingStrings.ResourceManager.Get("ErrorMessageTitle")</h4>
-                                <p>@(!string.IsNullOrEmpty(error.usermessage) ? error.usermessage : error.message)</p>
-                            </div>                    
-                        }  
+                    {
+                        <div class="col-lg-12">
+                            @foreach (var error in errors)
+                            {
+                                <div class="bs-callout bs-callout-danger">
+                                    <h4 style="margin-bottom:5px;">@BookingStrings.Get("ErrorMessageTitle")</h4>
+                                    <p>@(!string.IsNullOrEmpty(error.usermessage) ? error.usermessage : error.message)</p>
+                                </div>
+                            }
                         </div>
                     }
 
 
                     if (order.BookingOrder != null)
                     {
-                        <div class="col-lg-12" style="margin-bottom:0px; margin-top:0px;">                    
+                        <div class="col-lg-12" style="margin-bottom: 15px; background-color: #fff; position: relative;top: -120px;width: 40px;left: -24px;padding-right: 50px;border-radius: 40px;padding-top: 2px;padding-bottom: 2px;">
                             <!-- change action here -->
-                            <a href="#" class="order-remove" data-order="@order.BookingOrder.orderid">@BookingStrings.ResourceManager.Get("RemoveOrderLink")</a> 
+                            <a href="#" class="order-remove" data-order="@order.BookingOrder.orderid">
 
-                            <hr style="border-width: 1px 0px 0px; border-style: dashed none none; margin-top: 5px; margin-bottom: 15px;">
+                                kingStrings.Get("RemoveOrderLink") -->
+                                <img src=
+
+                                <img src="@Url.Content("~/images/new/close.png")">
+
+                            </a>
+
+
                         </div>
+                        <hr style="border-width: 1px 0px 0px; border-style: dashed none none; margin-top: 5px; margin-bottom: 15px;">
                     }
                 }
 
                 <div class="modal fade" id="removeOrderConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                     <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>       
-                            <h4 class="modal-title" id="myModalLabel" style="color:#777777;">@BookingStrings.ResourceManager.Get("RemoveOrderConfirmTitle")</h4>                  
-                        </div>
-                        <div>            
-                            <div class="modal-body">             
-                                <h3 style="color:#8c8c8c; margin-top:15px;">@BookingStrings.ResourceManager.Get("RemoveOrderConfirmText")</h3>
-                            </div>  
-                            <div class="modal-footer" id="modal-footer">                    
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel" style="color:#777777;">@BookingStrings.Get("RemoveOrderConfirmTitle")</h4>
+                            </div>
+                            <div>
+                                <div class="modal-body">
+                                    <h3 style="color:#8c8c8c; margin-top:15px;">@BookingStrings.Get("RemoveOrderConfirmText")</h3>
+                                </div>
+                                <div class="modal-footer" id="modal-footer">
                                     <button type="button" class="btn" data-dismiss="modal">
-                                        @BookingStrings.ResourceManager.Get("RemoveOrderCancelButton")</button>
+                                        @BookingStrings.Get("RemoveOrderCancelButton")
+                                    </button>
                                     <button type="button" class="btn btn-primary" id="yesConfirm">
-                                        @BookingStrings.ResourceManager.Get("RemoveOrderConfirmButton")</button>
-                            </div>            
+                                        @BookingStrings.Get("RemoveOrderConfirmButton")
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 
-               <div class="modal fade" id="promocodeInputForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                <div class="modal fade" id="promocodeInputForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>       
-                                <h4 class="modal-title" id="myModalLabel" style="color:#777777;">@BookingStrings.ResourceManager.Get("Promo_FormTitle")</h4>                  
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel" style="color:#777777;">@BookingStrings.Get("Promo_FormTitle")</h4>
                             </div>
-                            <div>            
-                                <div class="modal-body">             
+                            <div>
+                                <div class="modal-body">
                                     <div class="form-group">
-	                                    <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerMobile)">@BookingStrings.ResourceManager.Get("Promo_FormLabel")</label>
-	                                    <div class="controls">
-                                            @Html.TextBoxFor(m => m.Form.PromoCode, new { @class = "form-control", placeholder = "" })						        
-	                                    </div>
+                                        <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerMobile)">@BookingStrings.Get("Promo_FormLabel")</label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(m => m.Form.PromoCode, new { @class = "form-control", placeholder = "" })
+                                        </div>
                                     </div>
-                                </div>  
-                                <div class="modal-footer" id="modal-footer">                    
-                                    <button type="button" class="btn btn-primary" id="check-promo-code">@BookingStrings.ResourceManager.Get("Promo_FormButton")</button>
-                                </div>            
+                                </div>
+                                <div class="modal-footer" id="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="check-promo-code">@BookingStrings.Get("Promo_FormButton")</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 for (int index = 0; index < Model.Form.Orders.Count; index++)
                 {
                     var order = Model.Form.Orders[index].BookingOrder;
@@ -193,31 +203,59 @@
 
                 var reservationerrors = Model.Reservation.GetReservationErrors();
                 if (reservationerrors != null && reservationerrors.Count > 0)
-                {    
-                    <div class="col-lg-12" >                    
-                        <div class="bs-callout bs-callout-danger" style="margin-bottom:15px;">                    
-                            <h4 style="margin-bottom:5px;">@BookingStrings.ResourceManager.Get("ErrorMessageTitle")</h4>
+                {
+                    <div class="col-lg-12">
+                        <div class="bs-callout bs-callout-danger" style="margin-bottom:15px;">
+                            <h4 style="margin-bottom:5px;">@BookingStrings.Get("ErrorMessageTitle")</h4>
                             @foreach (var error in reservationerrors)
                             {
                                 <p>@(!string.IsNullOrEmpty(error.usermessage) ? error.usermessage : error.message)</p>
                             }
-                            </div>                     
+                        </div>
                     </div>
                 }
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 33%;"></td>
+                        <td style="width: 34%;">
+                            <div style="text-align: left;">
+                                <span class="ex_pay_title">У вас есть купон? </span> <br>
+                                <span class="">Впишите его сюда: </span> <br>
+                            </div>
+                            <input type="text" class="ex_pay_input" style="width: 100%; padding: 5px;"><br>
+                            <div style="text-align: right;">
+                                <input type="button" class="ex_pay_button" style="padding: 5px;" value="Проверить купон">
+                            </div>
+                        </td>
+                        <td style="width: 33%; vertical-align: top;">
+                            <!-- <div class="col-md-3 col-md-push-9">   -->
+                            <div>
 
-                
-                <div class="col-md-3 col-md-push-9">        
-                @if (Model.Reservation.price != null)     
-                {
-                    <div class="pull-right" style="margin-bottom: 20px;"><span style="color:#b7b7b7; font-weight:bold;">@BookingStrings.ResourceManager.Get("OrderTotalLabel")</span> <span style="font-size:1.2em; font-weight:bold; text-transform: uppercase;  padding: 0 0.333333em;">@Model.Reservation.price.total.ToString("# ##0.00") @Model.Reservation.price.currency</span></div>
-                }
-                </div>     
-                
+
+
+                                @if (Model.Reservation.price != null)
+                                {
+                    <!-- <div class="pull-right" style="margin-bottom: 20px;"> -->
+                                    <div style="text-align: right;">
+                                        <span class="ex_pay_title">Итоговая стоимость: </span>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="color:#b7b7b7; font-weight:bold;">@BookingStrings.Get("OrderTotalLabel")</span> <span style="font-size:1.2em; font-weight:bold; text-transform: uppercase;  padding: 0 0.333333em;">@Model.Reservation.price.total.ToString("# ##0.00") @Model.Reservation.price.currency</span>
+                                    </div>
+					<!-- </div> -->
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
                 if (GuestService.Settings.IsShowPromoCodeSection)
                 {
+                    
                     var modelStates = ViewData.ModelState.Where(m => m.Key == "PromoCodeError").Select(m => m.Value).ToList();
-                    <div class="col-md-9 col-md-pull-3" style="margin-bottom: 10px;">             
-                        <div>@BookingStrings.ResourceManager.Get("Promo_ApplyLabel") <a id="add-promo-code" href="#">@BookingStrings.ResourceManager.Get("Promo_ApplyCommand")</a></div>  
+                    <div class="col-md-9 col-md-pull-3" style="margin-bottom: 10px; display: none;">
+                        <div>@BookingStrings.Get("Promo_ApplyLabel") <a id="add-promo-code" href="#">@BookingStrings.Get("Promo_ApplyCommand")</a></div>
                         @if (Model.Form.PromoCodes != null && Model.Form.PromoCodes.Length > 0)
                         {
                             foreach (var promo in Model.Form.PromoCodes)
@@ -227,7 +265,7 @@
                         }
                         @if (modelStates.Count > 0)
                         {
-                                <div class="bs-callout bs-callout-danger">
+                            <div class="bs-callout bs-callout-danger">
                                 @foreach (var state in modelStates)
                                 {
                                     if (state.Errors != null && state.Errors.Count > 0)
@@ -235,128 +273,115 @@
                                         <p>@string.Join(", ", state.Errors.Select(m => m.ErrorMessage).ToList())</p>
                                     }
                                 }
-                                </div>                            
+                            </div>
                         }
-                    </div>                  
+                    </div>
+
+
                 }
+
+
                 <div class="clearfix"></div>
-                <div class="col-lg-12">   
-    
-	            <div class="row">
-                    <div class="form-group col-lg-4">
-	                    <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerName)">@BookingStrings.ResourceManager.Get("BookingFormName")</label>
-	                    <div class="controls">
-                            @Html.TextBoxFor(m => m.Form.CustomerName, new { @class = "form-control", placeholder = "" })
-                            @Html.ValidationMessageFor(m => m.Form.CustomerName)						        
-	                    </div>
-                    </div>            
-                    <div class="form-group col-lg-4">
-	                    <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerEmail)">@BookingStrings.ResourceManager.Get("BookingFormMail")</label>
-	                    <div class="controls">
-                            @Html.TextBoxFor(m => m.Form.CustomerEmail, new { @class = "form-control", placeholder = "" })
-                            @Html.ValidationMessageFor(m => m.Form.CustomerEmail)						        
-	                    </div>
-                    </div>
-                    <div class="form-group col-lg-4">
-	                    <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerMobile)">@BookingStrings.ResourceManager.Get("BookingFormPhone")</label>
-	                    <div class="controls">
-                            @Html.TextBoxFor(m => m.Form.CustomerMobile, new { @class = "form-control", placeholder = "" })
-                            @Html.ValidationMessageFor(m => m.Form.CustomerMobile)						        
-	                    </div>
-                    </div>
-	                <div class="clearfix"></div>
+                <div style="width: 100%; background-color: #083b82; position: absolute;margin-bottom: 20px;left: 0px;color: #fff; padding-top: 20px; padding-bottom: 20px; margin-top: 20px;">
 
-                    <div class="form-group col-lg-12">
-	                    <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerAddress)">@BookingStrings.ResourceManager.Get("BookingFormAddress")</label>
-	                    <div class="controls">
-                            @Html.TextBoxFor(m => m.Form.CustomerAddress, new { @class = "form-control", placeholder = "" })
-                            @Html.ValidationMessageFor(m => m.Form.CustomerAddress)						        
-	                    </div>
-                    </div>
-	                <div class="clearfix"></div>
+                    <div class="container">
 
-                    <div class="form-group col-lg-12">
-	                    <label class="control-label" for="@Html.NameFor(m => m.Form.BookingNote)">@BookingStrings.ResourceManager.Get("BookingFormNote")</label>
-	                    <div class="controls">
-                            @Html.TextBoxFor(m => m.Form.BookingNote, new { @class = "form-control", placeholder = "" })
-                            @Html.ValidationMessageFor(m => m.Form.BookingNote)						        
-	                    </div>
-                    </div>
-                    <div class="col-lg-12">                                        
-                        <div class="checkbox pull-right" style="padding-left:0;">
-                            <div style="float:right;">@Html.CheckBoxFor(m => m.Form.RulesAccepted, new { @style = "margin-right:5px;" })<label for="Form_RulesAccepted"></label>@BookingStrings.ResourceManager.Get("BookingAgreementConfirmMessage_1")&nbsp;<a href="#" id="confirmRules">@BookingStrings.ResourceManager.Get("BookingAgreementConfirmMessage_2")</a></div>
-                            <br />
-                            @Html.ValidationMessageFor(m => m.Form.RulesAccepted)
-                        </div>                   
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="modal fade" id="confirmRulesInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>       
-                                    <h4 class="modal-title" id="myModalLabel" style="color:#777777;">@BookingStrings.ResourceManager.Get("BookingAgreementTitle")</h4>                  
-                                </div>
-                                <div>            
-                                    <div class="modal-body">             
-                                        <div id="confirmRulesBody"></div>        
-                                    </div>  
-                                    <div class="modal-footer" id="modal-footer">                    
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal">
-                                                @BookingStrings.ResourceManager.Get("BookingAgreementCancel")</button>
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="yesRulesConfirm" data-bind="click: $root.excursionAddToCartClick">
-                                                @BookingStrings.ResourceManager.Get("BookingAgreementConfirm")</button>
-                                    </div>            
-                                </div>
+                        <div class="form-group col-lg-4">
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerName)">@BookingStrings.Get("BookingFormName")</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.Form.CustomerName, new { @class = "ex_pay_input", placeholder = "" })
+                                @Html.ValidationMessageFor(m => m.Form.CustomerName)
                             </div>
                         </div>
+                        <div class="form-group col-lg-4">
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerEmail)">@BookingStrings.Get("BookingFormMail")</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.Form.CustomerEmail, new { @class = "ex_pay_input", placeholder = "" })
+                                @Html.ValidationMessageFor(m => m.Form.CustomerEmail)
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerMobile)">@BookingStrings.Get("BookingFormPhone")</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.Form.CustomerMobile, new { @class = "ex_pay_input", placeholder = "" })
+                                @Html.ValidationMessageFor(m => m.Form.CustomerMobile)
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="form-group col-lg-12">
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerAddress)">@BookingStrings.Get("BookingFormAddress")</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.Form.CustomerAddress, new { @class = "ex_pay_input", placeholder = "" })
+                                @Html.ValidationMessageFor(m => m.Form.CustomerAddress)
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="form-group col-lg-12">
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.BookingNote)">@BookingStrings.Get("BookingFormNote")</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.Form.BookingNote, new { @class = "ex_pay_input", placeholder = "" })
+                                @Html.ValidationMessageFor(m => m.Form.BookingNote)
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="form-group col-lg-12">                                             
-                        <input type="button" onclick="submit()" @if (!Model.IsBookingEnabled) { <text>disabled="disabled"</text>  } 
-                            class="btn btn-large btn-primary pull-right" value="@BookingStrings.ResourceManager.Get("BookNowButton")" />    
-                    </div>                                
                 </div>
-            </div> 
+
+
+                <div class="col-lg-12" style="margin-top: 340px;" id="ex_foot_cart">
+
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="width: 33%; vertical-align: top;">
+                                <div style="padding-right: 30px;">
+                                    <span class="ex_pay_title">Pay options</span><br><br>
+                                    1. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.<br>
+                                    2. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.<br>
+                                    3. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.
+                                </div>
+                            </td>
+                            <td style="width: 33%; vertical-align: top;">
+                                <span class="ex_pay_title"> <!-- @PaymentStrings.Get("PaymentMethod") --> Способ оплаты</span>
+
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("claimId", Model.Reservation.claimId)
+
+                                @foreach (var paymentMode in Model.PaymentModes)
+                                {
+                                    if (!string.IsNullOrEmpty(paymentMode.processing))
+                                    {
+
+                                        <div class="col-lg-6" style="padding-left:0; width: auto; float: none;">
+                                            <div class="media" style="margin-bottom: 15px;">
+                                                <br>
+                                                <div class="media-body" style="display: inline-table;">
+                                                    <input type="radio" name="paymentId" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox">
+                                                    <label for="@paymentMode.id" class="css-label radGroup2">@paymentMode.name</label>
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    }
+                                }
+
+                            </td>
+                            <td style="text-align: right; width: 34%; ">
+                                <input type="checkbox" name="agree" id="agree" class="ex_pay_checkbox" required>
+                                <label for="agree" class="css-label radGroup2" style="font-size: 16px;">Я согласен с условиями пользования сайтом</label><br>
+
+                                <button style=" margin-top: 30px;width: 100%;font-size: 25px;color: #000;" value="" type="submit" class="btn btn-primary">Pay Now</button>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
             }
         }
     </div>
 </div>
 
-<div class="col-lg-12">
-    @if (Model.PaymentModes != null && Model.PaymentModes.Count > 0)
-    {
-        <span class="ex_pay_title"> <!-- @PaymentStrings.Get("PaymentMethod") --> Способ оплаты</span>
-        using (Html.BeginForm("processing", "payment"))
-        {
-            @Html.AntiForgeryToken()
-            @Html.Hidden("claimId", 1)
 
-            foreach (var paymentMode in Model.PaymentModes)
-            {
-                if (!string.IsNullOrEmpty(paymentMode.processing))
-                {
-                    @Html.Hidden("paymentId", paymentMode.id)
-                    <div class="col-lg-6" style="padding-left:0; width: auto; float: none;">
-                        <div class="media" style="margin-bottom: 15px;">
-                            <br>
-                            <div class="media-body" style="display: inline-table;">
 
-                                <input type="radio" name="payment_mode" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox">
-                                
-                                
-                                <label for="@paymentMode.id" class="css-label radGroup2">@paymentMode.name</label>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
-        }
-    }
-
-    <input type="radio" name="agree" id="agree" class="ex_pay_checkbox">
-
-    <label for="agree" class="css-label radGroup2" style="font-size: 16px;">Я согласен с условиями пользования сайтом</label><br>
-    
-    <button style=" margin-top: 30px;width: 100%;font-size: 25px;color: #000;" value="" type="submit" class="btn btn-primary">Pay Now</button>
-</div>
