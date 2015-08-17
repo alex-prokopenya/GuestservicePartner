@@ -346,7 +346,6 @@
                             <td style="width: 33%; vertical-align: top;">
                                 <span class="ex_pay_title"> <!-- @PaymentStrings.Get("PaymentMethod") --> Способ оплаты</span>
 
-                                @Html.AntiForgeryToken()
                                 @Html.Hidden("claimId", Model.Reservation.claimId)
 
                                 @foreach (var paymentMode in Model.PaymentModes)

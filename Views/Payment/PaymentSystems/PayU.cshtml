@@ -1,7 +1,7 @@
 ﻿@model GuestService.Models.Payment.ProcessingContext
 
 @{
-    ViewBag.Title = PaymentStrings.ResourceManager.Get("PaymentTitle");
+    ViewBag.Title = PaymentStrings.Get("PaymentTitle");
 }
 
 @section scripts {
@@ -97,7 +97,7 @@
             }
             else
             {
-            <h2>@PaymentStrings.ResourceManager.Get("PaymentCannotPayOrder")</h2>
+            <h2>@PaymentStrings.Get("PaymentCannotPayOrder")</h2>
             }
     </div>
 </div>
