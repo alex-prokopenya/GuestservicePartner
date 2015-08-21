@@ -219,12 +219,12 @@
                         <td style="width: 33%;"></td>
                         <td style="width: 34%;">
                             <div style="text-align: left;">
-                                <span class="ex_pay_title">У вас есть купон? </span> <br>
-                                <span class="">Впишите его сюда: </span> <br>
+                                <span class="ex_pay_title"> @SharedStrings.Get("ShoppingCart_HaveCoupon") </span> <br>
+                                <span class=""> @SharedStrings.Get("ShoppingCart_EnterCoupon") </span> <br>
                             </div>
                             <input type="text" class="ex_pay_input" style="width: 100%; padding: 5px;"><br>
                             <div style="text-align: right;">
-                                <input type="button" class="ex_pay_button" style="padding: 5px;" value="Проверить купон">
+                                <input type="button" class="ex_pay_button" style="padding: 5px;" value="@SharedStrings.Get("ShoppingCart_CheckCoupon")">
                             </div>
                         </td>
                         <td style="width: 33%; vertical-align: top;">
@@ -237,7 +237,7 @@
                                 {
                     <!-- <div class="pull-right" style="margin-bottom: 20px;"> -->
                                     <div style="text-align: right;">
-                                        <span class="ex_pay_title">Итоговая стоимость: </span>
+                                        <span class="ex_pay_title"> @SharedStrings.Get("ShoppingCart_Total") </span>
                                     </div>
                                     <div style="text-align: right;">
                                         <span style="color:#b7b7b7; font-weight:bold;">@BookingStrings.Get("OrderTotalLabel")</span> <span style="font-size:1.2em; font-weight:bold; text-transform: uppercase;  padding: 0 0.333333em;">@Model.Reservation.price.total.ToString("# ##0.00") @Model.Reservation.price.currency</span>
@@ -252,7 +252,11 @@
 
                 if (GuestService.Settings.IsShowPromoCodeSection)
                 {
-                    
+
+
+
+
+
                     var modelStates = ViewData.ModelState.Where(m => m.Key == "PromoCodeError").Select(m => m.Value).ToList();
                     <div class="col-md-9 col-md-pull-3" style="margin-bottom: 10px; display: none;">
                         <div>@BookingStrings.Get("Promo_ApplyLabel") <a id="add-promo-code" href="#">@BookingStrings.Get("Promo_ApplyCommand")</a></div>
@@ -287,24 +291,24 @@
                     <div class="container">
 
                         <div class="form-group col-lg-4">
-                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerName)">@BookingStrings.Get("BookingFormName")</label>
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerName)">@BookingStrings.Get("BookingFormName")</label> @Html.ValidationMessageFor(m => m.Form.CustomerName)
                             <div class="controls">
                                 @Html.TextBoxFor(m => m.Form.CustomerName, new { @class = "ex_pay_input", placeholder = "" })
-                                @Html.ValidationMessageFor(m => m.Form.CustomerName)
+
                             </div>
                         </div>
                         <div class="form-group col-lg-4">
-                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerEmail)">@BookingStrings.Get("BookingFormMail")</label>
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerEmail)">@BookingStrings.Get("BookingFormMail")</label> @Html.ValidationMessageFor(m => m.Form.CustomerEmail)
                             <div class="controls">
                                 @Html.TextBoxFor(m => m.Form.CustomerEmail, new { @class = "ex_pay_input", placeholder = "" })
-                                @Html.ValidationMessageFor(m => m.Form.CustomerEmail)
+
                             </div>
                         </div>
                         <div class="form-group col-lg-4">
-                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerMobile)">@BookingStrings.Get("BookingFormPhone")</label>
+                            <label class="control-label" for="@Html.NameFor(m => m.Form.CustomerMobile)">@BookingStrings.Get("BookingFormPhone")</label> @Html.ValidationMessageFor(m => m.Form.CustomerMobile)
                             <div class="controls">
                                 @Html.TextBoxFor(m => m.Form.CustomerMobile, new { @class = "ex_pay_input", placeholder = "" })
-                                @Html.ValidationMessageFor(m => m.Form.CustomerMobile)
+
                             </div>
                         </div>
                         <div class="clearfix"></div>
@@ -327,9 +331,7 @@
                         </div>
 
                     </div>
-
                 </div>
-
 
                 <div class="col-lg-12" style="margin-top: 340px;" id="ex_foot_cart">
 
@@ -337,16 +339,15 @@
                         <tr>
                             <td style="width: 33%; vertical-align: top;">
                                 <div style="padding-right: 30px;">
-                                    <span class="ex_pay_title">Pay options</span><br><br>
-                                    1. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.<br>
-                                    2. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.<br>
-                                    3. This is an adventurous tour around the natural park in the Akamas peninsula. This combined tour includes a trip by car or boat to the Blue Lagoon.
+                                    <span class="ex_pay_title">@PaymentStrings.Get("PayOptions")</span><br><br>
+                                    @PaymentStrings.Get("PayOption1")<br>
+                                    @PaymentStrings.Get("PayOption2")<br>
+                                    @PaymentStrings.Get("PayOption3")
                                 </div>
                             </td>
                             <td style="width: 33%; vertical-align: top;">
-                                <span class="ex_pay_title"> <!-- @PaymentStrings.Get("PaymentMethod") --> Способ оплаты</span>
+                                <span class="ex_pay_title"> @PaymentStrings.Get("PaymentMethod")</span>
 
-                                @Html.Hidden("claimId", Model.Reservation.claimId)
 
                                 @foreach (var paymentMode in Model.PaymentModes)
                                 {
@@ -357,20 +358,21 @@
                                             <div class="media" style="margin-bottom: 15px;">
                                                 <br>
                                                 <div class="media-body" style="display: inline-table;">
-                                                    <input type="radio" name="paymentId" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox">
+                                                    <input type="radio" name="paymentId" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox" required>
                                                     <label for="@paymentMode.id" class="css-label radGroup2">@paymentMode.name</label>
                                                 </div>
                                             </div>
-                                        </div>  
-                                    }
+                                        </div>           }
                                 }
 
                             </td>
                             <td style="text-align: right; width: 34%; ">
-                                <input type="checkbox" name="agree" id="agree" class="ex_pay_checkbox" required>
-                                <label for="agree" class="css-label radGroup2" style="font-size: 16px;">Я согласен с условиями пользования сайтом</label><br>
 
-                                <button style=" margin-top: 30px;width: 100%;font-size: 25px;color: #000;" value="" type="submit" class="btn btn-primary">Pay Now</button>
+                                @Html.CheckBoxFor(m => m.Form.RulesAccepted, new { @style = "margin-right:5px;", @class = "ex_pay_checkbox" })<label class="css-label radGroup2" style="font-size: 16px;" for="Form_RulesAccepted"></label>@BookingStrings.ResourceManager.Get("BookingAgreementConfirmMessage_1")&nbsp;<a href="#" id="confirmRules">@BookingStrings.ResourceManager.Get("BookingAgreementConfirmMessage_2")</a>
+                                <br />
+                                @Html.ValidationMessageFor(m => m.Form.RulesAccepted)
+
+                                <button style=" margin-top: 30px;width: 100%;font-size: 25px;color: #000;" value="" type="submit" class="btn btn-primary">@PaymentStrings.Get("PayNowButton")</button>
                             </td>
                         </tr>
                     </table>
