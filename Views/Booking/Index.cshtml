@@ -153,7 +153,7 @@
                         </div>
                     </div>
                 </div>
-
+<!--
                 <div class="modal fade" id="promocodeInputForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -177,7 +177,7 @@
                         </div>
                     </div>
                 </div>
-
+    -->
                 for (int index = 0; index < Model.Form.Orders.Count; index++)
                 {
                     var order = Model.Form.Orders[index].BookingOrder;
@@ -222,10 +222,38 @@
                                 <span class="ex_pay_title"> @SharedStrings.Get("ShoppingCart_HaveCoupon") </span> <br>
                                 <span class=""> @SharedStrings.Get("ShoppingCart_EnterCoupon") </span> <br>
                             </div>
-                            <input type="text" class="ex_pay_input" style="width: 100%; padding: 5px;"><br>
+                            <input type="text" name="Form.PromoCode" id="Form_PromoCode" class="ex_pay_input" style="width: 100%; padding: 5px;"><br>
+
                             <div style="text-align: right;">
-                                <input type="button" class="ex_pay_button" style="padding: 5px;" value="@SharedStrings.Get("ShoppingCart_CheckCoupon")">
+                                <button type="button" class="ex_pay_button" style="padding: 5px;"  id="check-promo-code">@SharedStrings.Get("ShoppingCart_CheckCoupon")</button>
                             </div>
+
+
+                            @if (GuestService.Settings.IsShowPromoCodeSection)
+                            {
+                                    var modelStates = ViewData.ModelState.Where(m => m.Key == "PromoCodeError").Select(m => m.Value).ToList();
+                          
+                                    if (Model.Form.PromoCodes != null && Model.Form.PromoCodes.Length > 0)
+                                    {
+                                        foreach (var promo in Model.Form.PromoCodes)
+                                        {
+                                            <div><span style="font-weight: bold;">@promo</span> <img style="vertical-align: baseline;" src="@Url.Content("~/images/smallcheck.png")" alt="" /></div>
+                                        }
+                                    }
+                                    if (modelStates.Count > 0)
+                                    {
+                                        <div class="bs-callout bs-callout-danger">
+                                            @foreach (var state in modelStates)
+                                            {
+                                                if (state.Errors != null && state.Errors.Count > 0)
+                                                {
+                                                    <p>@string.Join(", ", state.Errors.Select(m => m.ErrorMessage).ToList())</p>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                            }
+
                         </td>
                         <td style="width: 33%; vertical-align: top;">
                             <!-- <div class="col-md-3 col-md-push-9">   -->
@@ -248,42 +276,6 @@
                         </td>
                     </tr>
                 </table>
-
-
-                if (GuestService.Settings.IsShowPromoCodeSection)
-                {
-
-
-
-
-
-                    var modelStates = ViewData.ModelState.Where(m => m.Key == "PromoCodeError").Select(m => m.Value).ToList();
-                    <div class="col-md-9 col-md-pull-3" style="margin-bottom: 10px; display: none;">
-                        <div>@BookingStrings.Get("Promo_ApplyLabel") <a id="add-promo-code" href="#">@BookingStrings.Get("Promo_ApplyCommand")</a></div>
-                        @if (Model.Form.PromoCodes != null && Model.Form.PromoCodes.Length > 0)
-                        {
-                            foreach (var promo in Model.Form.PromoCodes)
-                            {
-                                <div><span style="font-weight: bold;">@promo</span> <img style="vertical-align: baseline;" src="@Url.Content("~/images/smallcheck.png")" alt="" /></div>
-                            }
-                        }
-                        @if (modelStates.Count > 0)
-                        {
-                            <div class="bs-callout bs-callout-danger">
-                                @foreach (var state in modelStates)
-                                {
-                                    if (state.Errors != null && state.Errors.Count > 0)
-                                    {
-                                        <p>@string.Join(", ", state.Errors.Select(m => m.ErrorMessage).ToList())</p>
-                                    }
-                                }
-                            </div>
-                        }
-                    </div>
-
-
-                }
-
 
                 <div class="clearfix"></div>
                 <div style="width: 100%; background-color: #083b82; position: absolute;margin-bottom: 20px;left: 0px;color: #fff; padding-top: 20px; padding-bottom: 20px; margin-top: 20px;">
@@ -358,11 +350,12 @@
                                             <div class="media" style="margin-bottom: 15px;">
                                                 <br>
                                                 <div class="media-body" style="display: inline-table;">
-                                                    <input type="radio" name="paymentId" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox" required>
+                                                    <input type="radio" name="Form.PaymentMethod" id="@paymentMode.id" value="@paymentMode.id" class="ex_pay_checkbox" required>
                                                     <label for="@paymentMode.id" class="css-label radGroup2">@paymentMode.name</label>
                                                 </div>
                                             </div>
-                                        </div>           }
+                                        </div>           
+                                    }
                                 }
 
                             </td>

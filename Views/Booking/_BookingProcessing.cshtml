@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = BookingStrings.ResourceManager.Get("BookingProcessing_Title");
+
+
+    var paymentType = Model.Form != null ? Model.Form.PaymentMethod : "";
 }
 
 <script type="text/javascript">
@@ -17,9 +20,9 @@ function executeQuery() {
                     $('#orderResult span#orderNum').html("<b>"+data.reservation+"</b>");           
                     
                     @if(User.Identity.IsAuthenticated) {
-                        <text>$('#orderPayBtn').attr('href','@Url.Action("order","guest")/'+parseInt(data.reservation));</text>
+                        <text>$('#orderPayBtn').attr('href', '@Url.Action("order","guest")/' + parseInt(data.reservation));</text>
                     } else {
-                        <text>$('#orderPayBtn').attr('href','@Url.Action("index","payment")?claim='+parseInt(data.reservation));</text>
+                        <text>$('#orderPayBtn').attr('href', '@Url.Action("index","payment")?claim=' + parseInt(data.reservation) + "&paymentMethod=@paymentType");</text>
                     }
                     $('#orderResult div#okOrderResult').show();             
                     $('#orderResult').modal({ show: true });
