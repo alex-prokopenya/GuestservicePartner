@@ -350,7 +350,6 @@
                 else 
                     result.fd = result.ld = null;
 
-                // result.version = ++paramsVersion;
                 return result;
             },
             applyFilterCategories = function (array, filter) {
@@ -451,6 +450,9 @@
                                     departures.push(d);
                                 });
                             }
+
+                            //список регионов
+                            //поиск по региону
                             searchDeparturePoints(departures);
                             searchDeparturePoint(departures[0]);
                         }
