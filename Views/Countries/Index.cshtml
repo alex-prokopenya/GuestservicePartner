@@ -1,0 +1,26 @@
+﻿@model GuestService.Models.Countries.CountriesCatalog
+
+@{
+    ViewBag.Title = Model.Title;
+    ViewBag.Description = Model.Description;
+    ViewBag.Keywords = Model.Keywords;
+}
+<div class="content-wrapper">
+    <hgroup class="title">
+      <h1>@ViewBag.Title</h1>
+    </hgroup>
+                
+                @if (Model.Countries.Length > 0)
+                {
+                    <ul>
+                        @foreach(var country in Model.Countries)
+                        {
+                            <li><a href="@Url.Action(@country.Value.ToLower(), "countries")">@country.Value</a></li>
+                        }
+                    </ul>
+                }
+    <h2>@(ViewBag.Title + " Seotext")</h2>
+    <p>
+       @Model.SeoText
+    </p>
+</div>

@@ -10,6 +10,15 @@
 
 @section scripts {
 <script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#ex_cont').css('background-image','url(http://exgo.com/guestservice_design/images/new/bg_option2.png)');
+        $('#search_box').hide();
+        $('#ex_cont').animate({top: '300px'});
+        $('.bk-container').css('background-color','#ffffff');
+    
+    });
+
     defaults.format = '@ExcursionStrings.ResourceManager.Get("DateTimeFormat")';    
     defaults.language =  '@ExcursionStrings.ResourceManager.Get("DateTimeLanguage")';    
     var site = site || {};
@@ -696,8 +705,6 @@
 			
             doDescription = function (o) {  
 
-                location.href = "@Url.Action("details", "excursion")/"+ o.excursion;
-
                 description(null);
                 prices(null);
                 cartinfoBookingView(false);
@@ -1084,9 +1091,6 @@
 				
                 excursionItemClick: function (data) {
                     if (data && data.excursion) {
-
-                        location.href+="details/"+data.excursion.id ;
-
                         doDescriptionHistory({ excursion: data.excursion.id });
 						 $('#ex_cont').css('background-image','url(http://exgo.com/guestservice_design/images/new/bg_option2.png)');
 						 $('#search_box').hide();

@@ -3,8 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    @if (ViewBag.Description != null)
+    {
+    <meta name="description" content="@ViewBag.Description" />
+    }
+    @if (ViewBag.Keywords != null)
+    {
+    <meta name="keywords" content="@ViewBag.Keywords" />
+    }
     <title>@ViewBag.Title</title>
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     @Styles.Render(string.Format("~/css/{0}/bootstrap.css", GuestService.Code.HttpPreferences.Current.VisualTheme))  
