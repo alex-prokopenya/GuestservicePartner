@@ -15,7 +15,7 @@
                     <ul>
                         @foreach(var country in Model.Countries)
                         {
-                            <li><a href="@Url.Action(@country.Value.ToLower(), "countries")">@country.Value</a></li>
+                            <li><a href="@Url.Action(@country.Key.ToLower(), "countries")">@country.Value</a></li>
                         }
                     </ul>
                 }

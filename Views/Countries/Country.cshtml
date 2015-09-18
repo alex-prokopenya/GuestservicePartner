@@ -16,7 +16,7 @@
         <ul>
             @foreach (var region in Model.Regions)
             {
-                <li><a href="@Url.Action(@region.Value.ToLower(), "excursion")">@region.Value</a></li>
+                <li><a href="@Url.Action(@region.Key.ToLower(), "excursion")">@region.Value</a></li>
             }
         </ul>
     }

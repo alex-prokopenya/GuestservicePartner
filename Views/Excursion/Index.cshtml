@@ -2,6 +2,13 @@
 
 @{
     ViewBag.Title = ExcursionStrings.Get("Title");
+
+    if (!string.IsNullOrEmpty(Model.Title))
+    {
+        ViewBag.Title = Model.Title;
+    }
+
+    var departurePoint = -10;
 }
 
 <script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>
@@ -10,8 +17,16 @@
 
 @section scripts {
 <script type="text/javascript">
-    defaults.format = '@ExcursionStrings.ResourceManager.Get("DateTimeFormat")';    
-    defaults.language =  '@ExcursionStrings.ResourceManager.Get("DateTimeLanguage")';    
+
+    @if (Model.NavigateState !=null && Model.NavigateState.Options != null && Model.NavigateState.Options.departures != null && Model.NavigateState.Options.departures.Length > 0)
+    {
+      departurePoint = @Model.NavigateState.Options.departures[0];
+    }
+
+    var departurePoint = @departurePoint;
+
+    defaults.format = '@ExcursionStrings.ResourceManager.Get("DateTimeFormat")';
+    defaults.language =  '@ExcursionStrings.ResourceManager.Get("DateTimeLanguage")';
     var site = site || {};
     site.vm = site.vm || {};
     var map;
@@ -390,14 +405,23 @@
                 }
 
                 if( o ) {
+
+                    if(departurePoint > 0) 
+                    {
+                        o.searchdeparture = departurePoint;
+                        departurePoint = -10;
+                    }
+
                     if( o.searchdeparture !== undefined ) {
                         searchDeparturePointForceUse(true);
                         ko.utils.arrayForEach(searchDeparturePoints(), function (d) {
                             if( d.id == o.searchdeparture ) {
+                                console.log(412);
                                searchDeparturePoint(d); 
                             }
                         });
                     } else {
+                        console.log(417);
                         searchDeparturePointForceUse(false);    
                         searchDeparturePoint((searchDeparturePoint() && searchDeparturePoint().length > 0) ? searchDeparturePoint()[0] : undefined);
                     }
@@ -444,22 +468,36 @@
                     searchDeparturePointsInitialized(true);
                     site.service.ajax.get('@Url.ApiActionLink("departures", "excursion")', { pa: partnerAlias(), psid: partnerSessionID(), spa: startPointAlias(), ds: filterDestinationState() ? filterDestinationState().id : null },
                         function (result) {
+
+                            
                             var departures = [{ id: 0, name: '@ExcursionStrings.ResourceManager.Get("SearchDeparture_AnyPoint")' }];
+                            var needIndex = 0;
+
                             if( result && result.departures ) { 
+                                
                                 ko.utils.arrayForEach(result.departures, function (d) {
+                                    
+                                    console.log(d.id + ' ' + departurePoint);
+                                    if(d.id == departurePoint)
+                                        needIndex = departures.length;
+
                                     departures.push(d);
                                 });
+
                             }
 
                             //список регионов
                             //поиск по региону
+                            console.log('need index is ' + needIndex);
+
                             searchDeparturePoints(departures);
-                            searchDeparturePoint(departures[0]);
+                            searchDeparturePoint(departures[needIndex]);
                         }
                     );                  
                 }
             },
             doSearchDeparturePointReset = function() {
+                console.log(491);
                 searchDeparturePointForceUse(false);
                 searchDeparturePoint((searchDeparturePoint() && searchDeparturePoint().length > 0) ? searchDeparturePoint()[0] : undefined);
             },
