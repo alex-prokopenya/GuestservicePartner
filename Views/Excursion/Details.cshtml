@@ -1,7 +1,9 @@
 ﻿@model GuestService.Models.Excursion.ExcursionIndexContext
 
 @{
-    ViewBag.Title = ExcursionStrings.Get("Title");
+    ViewBag.Title = Model.Title;
+    ViewBag.Description = Model.Description;
+    ViewBag.Keywords = Model.Keywords;
 }
 
 <script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>

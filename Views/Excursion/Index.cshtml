@@ -30,9 +30,12 @@
     var site = site || {};
     site.vm = site.vm || {};
     var map;
+
+    var departureSlugs = [];
+
     function initialize() {
-        var mapOptions = {                                          
-            mapTypeControl: false,                       
+        var mapOptions = {
+            mapTypeControl: false,
             panControl:false,
             rotateControl:false,
             streetViewControl: false,
@@ -41,7 +44,7 @@
             zoom: 8
         };
 
-      map = new google.maps.Map(document.getElementById("map"),mapOptions);     
+      map = new google.maps.Map(document.getElementById("map"),mapOptions);
 
       /*var mapOptions = {
         zoom: 8,
@@ -58,27 +61,29 @@
     }
 
     function show_hide() {
-        var hiddenContent = $("#showFilters").parent().find("div:eq(0)");                                        
-        if (hiddenContent.is(":visible")){                                                          
-            hiddenContent.slideUp(1000);                                             
-        } else{                                                                                                                                                           
-            hiddenContent.slideDown(1000);                                                                                
+        var hiddenContent = $("#showFilters").parent().find("div:eq(0)");
+        if (hiddenContent.is(":visible")){
+            hiddenContent.slideUp(1000);
+        } else{
+            hiddenContent.slideDown(1000);
         }
-        return false;                            
+        return false;
     }
     function map_resize_multiple_place(m,b) {
-        google.maps.event.trigger(m, "resize");                        
+        google.maps.event.trigger(m, "resize");
         m.fitBounds(b);
-    } 
+    }
     function map_resize_one_place(m,c) {
-        google.maps.event.trigger(m, "resize");                        
+        google.maps.event.trigger(m, "resize");
     	m.setCenter(new google.maps.LatLng(c.latitude,c.longitude));
-	    m.setZoom(14);	        
-    }  
-    $(function () {     	
-        "use strict";          
+	    m.setZoom(14);
+    }
+    var def_title =  document.title;
+
+    $(function () {
+        "use strict";
         site.vm.excursion = function () {
-            var           
+            var
             categoryImageBaseUrl = '@Url.ApiActionLink("categoryimage", "excursion", new { id = ".id.", w = 70, h = 70 })',
             excursionLargeImageBaseUrl = '@Url.ApiActionLink("catalogimage", "excursion", new { id = ".id.", i = ".i.", w = 760, h = 400 })',
             excursionImageBaseUrl = '@Url.ApiActionLink("catalogimage", "excursion", new { id = ".id.", i = 0, w = 310, h = 150 })',
@@ -112,7 +117,7 @@
             categorygroups = ko.observableArray(),
             //ranking = ko.observable(),
             geographies = ko.observableArray(),
-            excursions = ko.observableArray(),      
+            excursions = ko.observableArray(),
             excursionsData = ko.observableArray(),
             searchFlag = ko.observable(false),
             description = ko.observable(),
@@ -129,8 +134,8 @@
             filterDestinations = ko.observableArray([]),
             filterLanguages = ko.observableArray([]),
             filterDateChecked = ko.observable(false),
-            filterDate = ko.observable(),          
-           
+            filterDate = ko.observable(),
+
             cartinfoPaxSelectAdult = ko.observableArray([]),
             cartinfoPaxSelectChild = ko.observableArray([]),
             cartinfoPaxSelectInfant = ko.observableArray([]),
@@ -179,25 +184,25 @@
                     $('#excursionsortorder').dropdown();
                 }
             },
-            reset = function(id,obj,ex) {                     
-                prices(null);                                         
-                doExcursionPrice(id, obj);                             
+            reset = function(id,obj,ex) {
+                prices(null);
+                doExcursionPrice(id, obj);
 
-                var mapOptions = {                                          
-                    mapTypeControl: false,                       
+                var mapOptions = {
+                    mapTypeControl: false,
                     panControl:false,
                     rotateControl:false,
                     streetViewControl: false,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP                       
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
-                var map = new google.maps.Map(document.getElementById("map"),mapOptions);     
-                
+                var map = new google.maps.Map(document.getElementById("map"),mapOptions);
+
                 var depImage = new google.maps.MarkerImage(
                     "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FFD800",
                     new google.maps.Size(21, 34),
                     new google.maps.Point(0,0),
                     new google.maps.Point(10, 34));
-                                        
+
                 var destImage = new google.maps.MarkerImage(
                     "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|00CC00",
                     new google.maps.Size(21, 34),
@@ -206,71 +211,71 @@
 
                 var bounds = new google.maps.LatLngBounds();
                 var map_positions = [];
-                
+
                 if(ex.departures && ex.departures.length > 0) {
                     for(var departureIndex in ex.departures) {
                         var departure = ex.departures[departureIndex];
                         if(departure && departure.location && departure.name) {
                             var marker = new MarkerWithLabel({
-                                position: new google.maps.LatLng(departure.location.latitude,departure.location.longitude),                                  
+                                position: new google.maps.LatLng(departure.location.latitude,departure.location.longitude),
                                 map: map,
                                 icon: depImage,
                                 labelContent: departure.name,
                                 labelAnchor: new google.maps.Point(22, 0),
-                                labelClass: "labels", 
-                                labelStyle: {opacity: 0.75}                                                                  
+                                labelClass: "labels",
+                                labelStyle: {opacity: 0.75}
                             });
-                            bounds.extend(marker.position); 
+                            bounds.extend(marker.position);
                             map_positions.push(departure.location);
                         }
                     }
-                }  
+                }
 
-                if(ex.destinations && ex.destinations.length > 0) {                 
-                    for(i=0;i<ex.destinations.length;i++) {                                                     
-                        if(ex.destinations[i].location != null && ex.destinations[i].name != null) {                                     
+                if(ex.destinations && ex.destinations.length > 0) {
+                    for(i=0;i<ex.destinations.length;i++) {
+                        if(ex.destinations[i].location != null && ex.destinations[i].name != null) {
                             var marker = new MarkerWithLabel({
-                                position: new google.maps.LatLng(ex.destinations[i].location.latitude,ex.destinations[i].location.longitude),                                  
+                                position: new google.maps.LatLng(ex.destinations[i].location.latitude,ex.destinations[i].location.longitude),
                                 map: map,
                                 icon: destImage,
                                 labelContent: ex.destinations[i].name,
                                 labelAnchor: new google.maps.Point(22, 0),
-                                labelClass: "labels", 
-                                labelStyle: {opacity: 0.75}                                                                  
+                                labelClass: "labels",
+                                labelStyle: {opacity: 0.75}
                             });
-                            bounds.extend(marker.position); 
-                            map_positions.push(ex.destinations[i].location);                               
+                            bounds.extend(marker.position);
+                            map_positions.push(ex.destinations[i].location);
                         }
-                    }  
-                }        
-                    
+                    }
+                }
+
                 cartinfoMapView(map_positions.length > 0);
-                                    
+
                 if( map_positions.length == 1 )
                     map_resize_one_place(map, map_positions[0]);
                 else if( map_positions.length > 0 )
                     map_resize_multiple_place(map, bounds);
-		
-                $("#maptoggle").click(function(){                                                  
+
+                $("#maptoggle").click(function(){
                     $(this).html(($(this).html() == '@ExcursionStrings.ResourceManager.Get("MapShowLink")') ? '@ExcursionStrings.ResourceManager.Get("MapHideLink")' : '@ExcursionStrings.ResourceManager.Get("MapShowLink")');
                     $("#map").animate({ height: (($("#map").height() == 100) ? '400px' : "100px")}, 500, function() {
                         if( map_positions.length == 1 )
                             map_resize_one_place(map, map_positions[0]);
                         else if( map_positions.length > 0 )
                             map_resize_multiple_place(map, bounds);
-                    });                                
-                    $('html, body').animate({ scrollTop: $("#map").offset().top-100}, 1000);                                                                           
+                    });
+                    $('html, body').animate({ scrollTop: $("#map").offset().top-100}, 1000);
                     return false;
-                });             
+                });
             },
-            prepareDescription = function (d) { 
+            prepareDescription = function (d) {
 				//alert(d.excursion.text);
-                d.text =  d.excursion.text;			
+                d.text =  d.excursion.text;
                 if (d.pictures) {
                     for (var i = 0; i < d.pictures.length; i++) {
                         d.pictures[i].largeImageUrl = excursionLargeImageBaseUrl.replace('.id.', d.excursion.id).replace('.i.', i);
-                    }                    
-                }    
+                    }
+                }
 
                 if (d.excursion.languages) {
                     for (var i = 0; i < d.excursion.languages.length; i++) {
@@ -278,10 +283,10 @@
                         d.excursion.languages[i].languageImageUrl = languageImageBaseUrl.replace('.id.', alias);
                     }
                 }
-             
-                if(d.ranking) {                     
-                    ko.utils.arrayForEach(d.ranking.ranks, function (g) {                                    
-                        g.rankPct = g.rank*10+'%';                                                                         
+
+                if(d.ranking) {
+                    ko.utils.arrayForEach(d.ranking.ranks, function (g) {
+                        g.rankPct = g.rank*10+'%';
                     });
                     // console.log(d.ranking.ranks);
                 }
@@ -326,12 +331,21 @@
                         }
                     }
                 }
-                
+
                 result.departures = [];
                 if( searchDeparturePointForceUse() ) {
                     if( searchDeparturePoint() && searchDeparturePoint().id != 0 ) {
                          result.departures.push(searchDeparturePoint().id);
                          result.searchdeparture = searchDeparturePoint().id;
+ 
+                        //pushHistory
+                        //slugs
+                         var regionText = departureSlugs[ result.searchdeparture ];
+
+                         if(result.searchdeparture > 1 )
+                             history.pushState({ }, def_title + '. ' + regionText , '@Url.Action("", "excursion")/' + regionText.toLowerCase() ); //!!!
+
+
                     } else {
                         result.searchdeparture = 0;
                     }
@@ -360,9 +374,9 @@
                     }
                 }
 
-                if( filterDateChecked ) 
+                if( filterDateChecked )
                     result.fd = result.ld = filterDate();
-                else 
+                else
                     result.fd = result.ld = null;
 
                 return result;
@@ -399,14 +413,14 @@
             applySearchParams = function (o) {
                 excursionSortOrder((o && o.sortorder) ? ko.utils.arrayFirst(excursionSortOrders(), function (item) { return item.name == o.sortorder; }) : excursionSortOrder());
                 var s = (o && o.text && o.text != '') ? o.text : '';
-                if( searchTextInput() != s ) {   
+                if( searchTextInput() != s ) {
                     searchTextInputSkipChanges = true;
                     searchTextInput(s);
                 }
 
                 if( o ) {
 
-                    if(departurePoint > 0) 
+                    if(departurePoint > 0)
                     {
                         o.searchdeparture = departurePoint;
                         departurePoint = -10;
@@ -417,12 +431,12 @@
                         ko.utils.arrayForEach(searchDeparturePoints(), function (d) {
                             if( d.id == o.searchdeparture ) {
                                 console.log(412);
-                               searchDeparturePoint(d); 
+                               searchDeparturePoint(d);
                             }
                         });
                     } else {
                         console.log(417);
-                        searchDeparturePointForceUse(false);    
+                        searchDeparturePointForceUse(false);
                         searchDeparturePoint((searchDeparturePoint() && searchDeparturePoint().length > 0) ? searchDeparturePoint()[0] : undefined);
                     }
                 }
@@ -432,19 +446,19 @@
                     applyFilter(filterDepartures(), []);
                 } else {
                     applyFilter(filterDepartures(), (o && o.departures) ? o.departures : undefined);
-                } 
+                }
                 applyFilter(filterDestinations(), (o && o.destinations) ? o.destinations : undefined);
                 applyFilter(filterLanguages(), (o && o.languages) ? o.languages : undefined);
 
                 if(o && o.fd && o.ld) {
                     filterDateChecked(true);
-                    if(filterDate() != o.fd) {                    
+                    if(filterDate() != o.fd) {
                         searchDateSkipChanges = true;
-                        filterDate(o.fd);                          
+                        filterDate(o.fd);
                     }
                 } else {
                    filterDateChecked(false);
-                }          
+                }
             },
             prepareExcursion = function (d) {
                 if (d && d.excursion && d.excursion.languages) {
@@ -469,17 +483,23 @@
                     site.service.ajax.get('@Url.ApiActionLink("departures", "excursion")', { pa: partnerAlias(), psid: partnerSessionID(), spa: startPointAlias(), ds: filterDestinationState() ? filterDestinationState().id : null },
                         function (result) {
 
-                            
+
                             var departures = [{ id: 0, name: '@ExcursionStrings.ResourceManager.Get("SearchDeparture_AnyPoint")' }];
                             var needIndex = 0;
 
-                            if( result && result.departures ) { 
-                                
+                            departureSlugs = [];
+
+                            if( result && result.departures ) {
+
                                 ko.utils.arrayForEach(result.departures, function (d) {
-                                    
+
                                     console.log(d.id + ' ' + departurePoint);
                                     if(d.id == departurePoint)
                                         needIndex = departures.length;
+
+                                    if(d.name==null) d.name = '';
+
+                                    departureSlugs[d.id] = d.name.toLowerCase();
 
                                     departures.push(d);
                                 });
@@ -493,7 +513,7 @@
                             searchDeparturePoints(departures);
                             searchDeparturePoint(departures[needIndex]);
                         }
-                    );                  
+                    );
                 }
             },
             doSearchDeparturePointReset = function() {
@@ -505,7 +525,7 @@
                 history.pushState({ cmd: 'categories' }, document.title, null);
                 doCategories();
             },
-            doCategories = function () {            
+            doCategories = function () {
                 var text = searchTextInput();
                 if( text && text !== '') {
                     searchTextInputSkipChanges = true;
@@ -517,14 +537,14 @@
                 if( filterDestinationState() ) {
                     filterDestinationState(null);
                     filterInitialized(false);
-                    doDepartureInitialize(true);    
+                    doDepartureInitialize(true);
                 } else {
                     doDepartureInitialize(false);
                 }
-                
-                if (categorygroups().length == 0) {                    
+
+                if (categorygroups().length == 0) {
                     site.service.ajax.get('@Url.ApiActionLink("destinationsandcategorygroups", "excursion")', { pa: partnerAlias(), psid: partnerSessionID(), spa: startPointAlias() },
-                        function (result) {                        
+                        function (result) {
                             destinationstates([]);
                             if (result && result.destinationstates) {
                                 ko.utils.arrayForEach(result.destinationstates, function (g) {
@@ -547,8 +567,8 @@
                                 });
                             }
 
-                            /*if (result && result.ranking) {                               
-                                ranking(result.ranking);                               
+                            /*if (result && result.ranking) {
+                                ranking(result.ranking);
                             } else {
                                 ranking(null);
                             }*/
@@ -569,26 +589,26 @@
                 }
                 doSearch(o, checkstate);
             },
-			
-			
-			
-			
+
+
+
+
             doSearch = function (o, checkstate) {
                 var doSearchView = 0;
                 navigateView(operation.loading);
                 if (o && o.text && o.text != "") {
                     geographies([]);
 
-                    doSearchView = operation.search;   
+                    doSearchView = operation.search;
 
                     site.service.ajax.get('@Url.ApiActionLink("search", "excursion")', { s: o.text, spa: startPointAlias() },
                         function (result) {
-                            if (result.geography) {                                
+                            if (result.geography) {
                                 geographies([]);
                                 ko.utils.arrayForEach(result.geography, function (d) {
                                     geographies.push(d);
                                 });
-                              
+
                             }
                         }
                     );
@@ -646,15 +666,15 @@
                             } else {
                                 filterLanguages([]);
                             }
-                            filterDate();                      
+                            filterDate();
                         }
                     );
                 }
 
                 excursions([]);
                 excursionsData([]);
-                searchFlag(true);                    
-                site.service.ajax.get('@Url.ApiActionLink("catalog", "excursion")', {                    
+                searchFlag(true);
+                site.service.ajax.get('@Url.ApiActionLink("catalog", "excursion")', {
                         pa: partnerAlias(),
                         psid: partnerSessionID(),
                         spa: startPointAlias(),
@@ -682,8 +702,8 @@
                             }
                             else
                                 applySearchParams(o, checkstate);
-                            searchFlag(false);                            
-                        
+                            searchFlag(false);
+
                             navigateView(doSearchView);
                         }
                     }
@@ -692,30 +712,30 @@
             doScrollExcursionList = function () {
                 if(excursions() && excursionsData() ) {
                     for (var i = excursions().length, j = excursionsData().length, m = i + 10; i < j && i < m; i++) {
-                        excursions.push(prepareExcursion(excursionsData()[i]));    
+                        excursions.push(prepareExcursion(excursionsData()[i]));
                     }
                 }
             },
-            doDescriptionHistory = function (o) {                            
+            doDescriptionHistory = function (o) {
                 history.pushState({ cmd: 'description', o: o }, document.title, null);
                 doDescription(o);
-				
-				
+
+
             },
-			
-			 doDescriptionText = function (excursionId) { 
-					$( '#avatar_ex_'+excursionId).hide();		
-					$( '#ex_discript_'+excursionId).show();	
-					$( '#ex_discript_shadow'+excursionId).css('box-shadow','inset 0px -50px 50px -20px #ffbc23');						
+
+			 doDescriptionText = function (excursionId) {
+					$( '#avatar_ex_'+excursionId).hide();
+					$( '#ex_discript_'+excursionId).show();
+					$( '#ex_discript_shadow'+excursionId).css('box-shadow','inset 0px -50px 50px -20px #ffbc23');
 					$('#ex_discript_' + excursionId).html('<img src="@Url.Content("~/images/new/loader.gif")">');
                  site.service.ajax.get('@Url.ApiActionLink("exdescription", "excursion")', {
                      pa: partnerAlias(),
                      ex: excursionId
                  },
                      function (result) {
-                         if (result && result.length > 0 && result[0] && result[0].excursion && result[0].excursion.id == excursionId) {    
+                         if (result && result.length > 0 && result[0] && result[0].excursion && result[0].excursion.id == excursionId) {
 							 var text = result[0].description[0].paragraphs[0];
-							 $('#ex_discript_' + excursionId).html(text); 
+							 $('#ex_discript_' + excursionId).html(text);
                               /* alert(result[0].description[0].paragraphs[0]); */
 							  /* alert(text);  */
                          }
@@ -724,22 +744,22 @@
                      }
                  );
              },
-			
-			doDescriptiOffText = function (excursionId) {    
+
+			doDescriptiOffText = function (excursionId) {
 					$( '#avatar_ex_'+excursionId).show();
 					$( '#ex_discript_'+excursionId).hide();
-					$( '#ex_discript_shadow'+excursionId).css('box-shadow','none');	
+					$( '#ex_discript_shadow'+excursionId).css('box-shadow','none');
              },
-			
-			
-            doDescription = function (o) {  
+
+
+            doDescription = function (o) {
 
                 location.href = "@Url.Action("details", "excursion")/"+ o.excursion;
 
                 description(null);
                 prices(null);
                 cartinfoBookingView(false);
-                navigateView(operation.description);                
+                navigateView(operation.description);
 
                 site.service.ajax.get('@Url.ApiActionLink("exdescription", "excursion")', {
                         pa: partnerAlias(),
@@ -747,13 +767,13 @@
                         ex: o.excursion
                     },
                     function (result) {
-                        if (result && result.length > 0 && result[0] && result[0].excursion && result[0].excursion.id == o.excursion) {   
-						
+                        if (result && result.length > 0 && result[0] && result[0].excursion && result[0].excursion.id == o.excursion) {
+
 						//	alert(result[0].excursion.destinations[0].location.latitude);
-							
-                            description(prepareDescription(result[0])); 
-                            if( !o.date && result[0].excursiondates ) { 
-                                ko.utils.arrayForEach(result[0].excursiondates, function (d) {  
+
+                            description(prepareDescription(result[0]));
+                            if( !o.date && result[0].excursiondates ) {
+                                ko.utils.arrayForEach(result[0].excursiondates, function (d) {
                                     if( !o.date && d.allclosed == false && d.isprice == true && d.isstopsale == false ) {
                                         o.date = d.date;
                                     }
@@ -767,7 +787,7 @@
                     }
                 );
             },
-            doExcursionPrice = function (id, o) { 
+            doExcursionPrice = function (id, o) {
                 var priceUrl = excursionPriceBaseUrl.replace('.id.', id)
                 if (!(o && o.date)) o.date = site.utils.date.formatIso(new Date());
                 pricesNotFound(false);
@@ -780,7 +800,7 @@
                         spa: startPointAlias(),
                         dt: o.date
                     },
-                    function (result) {                                                                 
+                    function (result) {
                         if (description() && description().excursion.id == id) {
                             excursionpricedate(o.date);
                             if (prices() == null) {
@@ -790,10 +810,10 @@
                                     selectedDateFormat: 'YYYY-MM-DD',
                                     language: '@Sm.System.Mvc.Language.UrlLanguage.CurrentLanguage',
                                     description: description().excursiondates
-                                }                                                                                           
+                                }
                                 $('#excursionpricedate')
                                     .datepaginator(options)
-                                    .on('selectedDateChanged', function (event, c) {                                        
+                                    .on('selectedDateChanged', function (event, c) {
                                         if (excursionpricedateIsChanging === false) {
                                             doExcursionPrice(id, { date: site.utils.date.formatIso(c.toDate()) });
                                         }
@@ -820,31 +840,31 @@
                                     if (d.language)      columns.language = true;
                                     if (d.time)          columns.extime = true;
                                     if (d.group)         columns.group = true;
-                                    if (d.closesaletime) columns.closesaletime = true;                                                                                                            
+                                    if (d.closesaletime) columns.closesaletime = true;
                                     // var p = ko.mapping.fromJS(d);
-                                    prices.push(d);                                   
+                                    prices.push(d);
                                 }
                             });
                             priceColumns(columns);
                             pricesNotFound(prices().length == 0);
-                            
+
                         }
                     }
                 );
             },
 
-            doExcursionConfirmAddToCart = function(data) {                    
+            doExcursionConfirmAddToCart = function(data) {
                 cartinfoPrice(data);
                 cartinfoAdult(1);
                 cartinfoChild(0);
                 cartinfoInfant(0);
-                cartinfoNote('');                
-                cartinfoName('');                
-                cartinfoPhone('');                
+                cartinfoNote('');
+                cartinfoName('');
+                cartinfoPhone('');
                 cartinfoErrors([]);
-                cartinfoPickUpPoint(null);  
-                cartinfoPickUpHotel(null);         
-                    
+                cartinfoPickUpPoint(null);
+                cartinfoPickUpHotel(null);
+
                 pickuphotels(null);
 
                 if( !data.pickuppoints ) {
@@ -863,7 +883,7 @@
                             dt: data.date,
                             dp: dpoints
                         },
-                        function (result) {                                                                 
+                        function (result) {
                             var hotels = [{name: '@ExcursionStrings.ResourceManager.Get("PickupHotelHint")', ishint: true}];
 
                             pickuphotels(hotels);
@@ -871,7 +891,7 @@
                                 ko.utils.arrayForEach(result, function (h) {
                                     pickuphotels.push(h);
                                 });
-                            } 
+                            }
                         }
                     );
                 }
@@ -879,16 +899,16 @@
                 cartinfoBookingView(true);
                //console.log(cartinfoPrice());
                // $('#confirmpricemodal div#confirmPriceResult').hide();
-               // $('#confirmpricemodal div#confirmPriceBody').show();                               
+               // $('#confirmpricemodal div#confirmPriceBody').show();
                // $('#confirmpricemodal').modal({ show: true });
             },
-            doExcursionAddToCart = function() {               
+            doExcursionAddToCart = function() {
                 var price = cartinfoPrice();
                 site.service.ajax.post('@Url.Action("addcart", "excursion")', {
-                        pa: partnerAlias(), 
+                        pa: partnerAlias(),
                         psid: partnerSessionID(),
                         cid: externalCartID(),
-                        excursion: { 
+                        excursion: {
                             id: price ? price.id : (-1),
                             date: price ? price.date : null,
                             extime: (price && price.time) ? price.time.id : null,
@@ -899,10 +919,10 @@
                             pickuphotel: (cartinfoPickUpHotel() && cartinfoPickUpHotel().id) ? cartinfoPickUpHotel().id : null,
                             pax: { adult: cartinfoAdult(), child: cartinfoChild(), infant: cartinfoInfant() },
                             contact: { name: cartinfoName(), mobile: cartinfoPhone() },
-                            note: cartinfoNote()                            
+                            note: cartinfoNote()
                         }
                     },
-                    function (result) {                       
+                    function (result) {
                         if( result && result.errormessages ) {
                             cartinfoErrors(result.errormessages);
                         } else {
@@ -919,7 +939,7 @@
                         }
                         $('#confirmpricemodal').modal({ show: true });
                     },
-                    function (failresult) {                        
+                    function (failresult) {
                         return true;
                     }
                 );
@@ -941,14 +961,14 @@
                         doDescription(o); break;
                 }
             },
-            
+
             doNavigateToPriceList = function() {
                 cartinfoBookingView(false);
                 $('html, body').animate({
                     scrollTop: $('#excursionPrices').offset().top
                 }, 500);
             },
-            
+
             doSurveyMoreReviewClick = function() {
               var d = description();
               if (d && d.surveynotes && d.surveynotesView && d.surveynotesView()) {
@@ -965,32 +985,34 @@
                 d.surveynotesMoreButton(false);
               }
             },
-
+            
             searchDeparturePointChanged = function(data, event) {
                 if (event.originalEvent) { // user changed
                     searchDeparturePointForceUse((searchDeparturePoint() && searchDeparturePoint().id != 0) ? true : false);
-                    doSearchHistory(buildSearchParams()); 
-                } 
+                    doSearchHistory(buildSearchParams());
+
+
+                }
             };
 
-            for(var i = 0; i <= @GuestService.Settings.CartinfoPaxSelectMaxAdult; i++) {
-                cartinfoPaxSelectAdult.push({value: i, name: i.toString()});
-            }
-            for(var i = 0; i <= @GuestService.Settings.CartinfoPaxSelectMaxChild; i++) {
-                cartinfoPaxSelectChild.push({value: i, name: i.toString()});
-            }
-            for(var i = 0; i <= @GuestService.Settings.CartinfoPaxSelectMaxInfant; i++) {
-                cartinfoPaxSelectInfant.push({value: i, name: i.toString()});
-            }
+                for(var i = 0; i <= @GuestService.Settings.CartinfoPaxSelectMaxAdult; i++) {
+                    cartinfoPaxSelectAdult.push({value: i, name: i.toString()});
+                }
+                for(var i = 0; i <= @GuestService.Settings.CartinfoPaxSelectMaxChild; i++) {
+                    cartinfoPaxSelectChild.push({value: i, name: i.toString()});
+                }
+                for(var i = 0; i <= @GuestService.Settings.CartinfoPaxSelectMaxInfant; i++) {
+                    cartinfoPaxSelectInfant.push({value: i, name: i.toString()});
+                }
 
-            searchText.subscribe(function (value) {
-			/* $('#ex_cont').css('background-image','url(http://exgo.com/guestservice_design/images/new/bg_option.png)'); */
-			$('#ex_cont').animate({top: '184px'}, 800);
-			$(".bk-footer").animate({bottom: '-90px'});
-			$('#footer_ok').attr('value','ok')
-			$("#ex_title").fadeOut();
-			$("#search_box").animate({top: '-10px'}, 800);
-			$('html').css( "overflow", "auto" );
+                searchText.subscribe(function (value) {
+			    /* $('#ex_cont').css('background-image','url(http://exgo.com/guestservice_design/images/new/bg_option.png)'); */
+			    $('#ex_cont').animate({top: '184px'}, 800);
+			    $(".bk-footer").animate({bottom: '-90px'});
+			    $('#footer_ok').attr('value','ok')
+			    $("#ex_title").fadeOut();
+			    $("#search_box").animate({top: '-10px'}, 800);
+			    $('html').css( "overflow", "auto" );
 
 
                 if( searchTextInputSkipChanges != true ) {
@@ -1000,24 +1022,24 @@
                 searchTextInputSkipChanges = false;
             });
 
-            filterDateChecked.subscribe(function (value) {  
+            filterDateChecked.subscribe(function (value) {
                 if( value ) {
-                    filterDate('@DateTime.Now.ToString("s")');    
+                    filterDate('@DateTime.Now.ToString("s")');
                 } else {
                     filterDate('');
                 }
             });
 
-            filterDate.subscribe(function (value) {       
-                if(searchDateSkipChanges != true) {                                        
-                    doSearchHistory(buildSearchParams());                    
-                } 
+            filterDate.subscribe(function (value) {
+                if(searchDateSkipChanges != true) {
+                    doSearchHistory(buildSearchParams());
+                }
                 searchDateSkipChanges = false;
             });
 
 
             return {
-                // 
+                //
                 windowHeight: ko.observable($(window).height()+'px'),
                 loadingInProgress: loadingInProgress,
                 // data
@@ -1047,7 +1069,7 @@
                 //ranking: ranking,
                 geographies: geographies,
                 excursions: excursions,
-                searchFlag: searchFlag,             
+                searchFlag: searchFlag,
                 // preloader: preloader,
                 description: description,
                 pickuphotels: pickuphotels,
@@ -1087,7 +1109,7 @@
                 catalogButtonClick: function () {
                     doSearchDeparturePointReset();
                     doSearchHistory(buildViewParams());
-					
+
                 },
                 destinationstatesItemClick: function (data) {
                     if( data ) {
@@ -1100,26 +1122,26 @@
                     }
                 },
                 geographyItemClick: function (data) {
-                    if (data && data.destinations) {                
+                    if (data && data.destinations) {
                         doSearchHistory(buildViewParams({ destinations: data.destinations }));
                     }
                 },
-				
+
 				 excursionItemShowText: function (data) {
-				 
+
                     if (data && data.excursion) {
-						
+
                         doDescriptionText( data.excursion.id);
                     }
                 },
-				
+
 				closeExText: function (data) {
-				 
+
                     if (data && data.excursion) {
                         doDescriptiOffText( data.excursion.id);
                     }
                 },
-				
+
                 excursionItemClick: function (data) {
                     if (data && data.excursion) {
 
@@ -1130,9 +1152,6 @@
 						 $('#search_box').hide();
 						 $('#ex_cont').animate({top: '300px'});
 						 $('.bk-container').css('background-color','#ffffff');
-						 /* $("#excursion_container").animate({top: '-300px'}); */
-						 
-						/* alert ('ok'); */
                     }
                 },
                 excursionItemBookClick: function (data) {
@@ -1168,95 +1187,95 @@
                         data.marked(!data.marked());
                         doSearchHistory(buildSearchParams());
                     }
-                },                
+                },
                 filterLanguageItemClick: function (data) {
                     if (data) {
                         data.marked(!data.marked());
                         doSearchHistory(buildSearchParams());
                     }
-                },  
+                },
                 filterDateCheckedItemClick: function (data) {
                     if (data) {
                         data.filterDateChecked(!data.filterDateChecked());
                         if( !data.filterDateChecked() )
                             doSearchHistory(buildSearchParams());
                     }
-                },             
-                /*filterDateFlagResetClick: function () {                                        
-                    doSearchHistory(buildSearchParams());                    
+                },
+                /*filterDateFlagResetClick: function () {
+                    doSearchHistory(buildSearchParams());
                 },*/
                 excursionPriceItemClick: function (data) {
                     doExcursionConfirmAddToCart(data);
                 },
-                excursionAddToCartClick: function (data) {                
+                excursionAddToCartClick: function (data) {
                     doExcursionAddToCart();
                 },
-                excursionAddRatingClick: function (data) {                
+                excursionAddRatingClick: function (data) {
                     doExcursionAddRatingClick();
-                },                
-                cartinfoShowPickUpPointMapClick: function() {                    
+                },
+                cartinfoShowPickUpPointMapClick: function() {
                     var map;
-                    
-                    if(cartinfoPrice().pickuppoints[0].location != null) 
-                        var myLatlng = new google.maps.LatLng(cartinfoPrice().pickuppoints[0].location.latitude,cartinfoPrice().pickuppoints[0].location.longitude);                    
+
+                    if(cartinfoPrice().pickuppoints[0].location != null)
+                        var myLatlng = new google.maps.LatLng(cartinfoPrice().pickuppoints[0].location.latitude,cartinfoPrice().pickuppoints[0].location.longitude);
                     else
                         var myLatlng = new google.maps.LatLng(0,0);
 
-                    var mapOptions = {                                          
-                        mapTypeControl: false,                       
+                    var mapOptions = {
+                        mapTypeControl: false,
                         panControl:false,
                         rotateControl:false,
                         streetViewControl: false,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     };
-                    map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);      
+                    map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
                     var selImage = new google.maps.MarkerImage(
                         "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FF0000",
                         new google.maps.Size(21, 34),
                         new google.maps.Point(0,0),
-                        new google.maps.Point(10, 34));                        
+                        new google.maps.Point(10, 34));
                     var othImage = new google.maps.MarkerImage(
                         "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|00CC00",
                         new google.maps.Size(21, 34),
                         new google.maps.Point(0,0),
                         new google.maps.Point(10, 34));
-                    var marker = new Array();                                        
+                    var marker = new Array();
                     var bounds = new google.maps.LatLngBounds();
-                    if (cartinfoPrice().pickuppoints.length > 0) {                        
-                        for(i=0;i<cartinfoPrice().pickuppoints.length;i++) {                                                     
-                            if(cartinfoPrice().pickuppoints[i].location != null && cartinfoPrice().pickuppoints[i].name != null) {                              
+                    if (cartinfoPrice().pickuppoints.length > 0) {
+                        for(i=0;i<cartinfoPrice().pickuppoints.length;i++) {
+                            if(cartinfoPrice().pickuppoints[i].location != null && cartinfoPrice().pickuppoints[i].name != null) {
                                 if(cartinfoPickUpPoint().id == cartinfoPrice().pickuppoints[i].id) var icon_ = selImage; else var icon_ = othImage;
                                 marker[i] = new MarkerWithLabel({
-                                    position: new google.maps.LatLng(cartinfoPrice().pickuppoints[i].location.latitude,cartinfoPrice().pickuppoints[i].location.longitude),                                  
+                                    position: new google.maps.LatLng(cartinfoPrice().pickuppoints[i].location.latitude,cartinfoPrice().pickuppoints[i].location.longitude),
                                     map: map,
                                     icon: icon_,
                                     labelContent: cartinfoPrice().pickuppoints[i].name,
                                     labelAnchor: new google.maps.Point(22, 0),
-                                    labelClass: "labels", 
+                                    labelClass: "labels",
                                     labelStyle: {opacity: 0.75},
-                                    pickuppoint: cartinfoPrice().pickuppoints[i]                                   
+                                    pickuppoint: cartinfoPrice().pickuppoints[i]
                                 });
                                 bounds.extend(marker[i].position);
-                                google.maps.event.addListener(marker[i], 'click', function() {                 
-                                    cartinfoPickUpPoint(this.pickuppoint);              
+                                google.maps.event.addListener(marker[i], 'click', function() {
+                                    cartinfoPickUpPoint(this.pickuppoint);
                                     $('#mapmodals').modal('hide');
-                                });  
+                                });
                             }
-                        }                                                
+                        }
                     } else {
                         bounds.extend(myLatlng);
                     }
-                        
+
                     $('#mapmodals').modal({ show: true });
-                    $('#mapmodals').on('shown.bs.modal', function () {                        
+                    $('#mapmodals').on('shown.bs.modal', function () {
                         if(i == 1) map_resize_one_place(map, (cartinfoPrice().pickuppoints && cartinfoPrice().pickuppoints.length > 0 && cartinfoPrice().pickuppoints[0].location) ? cartinfoPrice().pickuppoints[0].location : myLatlng); else map_resize_multiple_place(map,bounds);
                     });
                 },
-                excursionBookingCloseClick: function (data) {                    
-                    if (data && data.id) {                      
-                        cartinfoBookingView(false);                 
+                excursionBookingCloseClick: function (data) {
+                    if (data && data.id) {
+                        cartinfoBookingView(false);
                         reset(data.id, { date: excursionpricedate() },description().excursion);
-                    }                 
+                    }
                 },
                 navigateBackClick: function() {
                     history.back();
@@ -1267,12 +1286,12 @@
                 },
                 surveyMoreReviewClick: function() {
                     doSurveyMoreReviewClick();
-                }     
+                }
             };
         } ();
         ko.applyBindings(site.vm.excursion, document.getElementById("excursion_container"));
 
-        $(window).resize(function () {            
+        $(window).resize(function () {
             // site.vm.excursion.windowHeight($(window).height()+'px');
         });
 
@@ -1286,20 +1305,20 @@
             }
         });
 
-        $(window).scroll(function () {                                     
+        $(window).scroll(function () {
             var panel = $('#exlistbottompanel');
-          
-            if(panel && panel.offset() && ($(window).scrollTop() + $(window).height() + 300 > panel.offset().top + panel.height())) {                                                             
-               
-                site.vm.excursion.scrollExcursionList();               
+
+            if(panel && panel.offset() && ($(window).scrollTop() + $(window).height() + 300 > panel.offset().top + panel.height())) {
+
+                site.vm.excursion.scrollExcursionList();
             }
-        });                                                                                       
+        });
 
         if( sm && sm.iframe ) {
             sm.iframe.setOnScroll(function() {
-                var panel = $('#exlistbottompanel');        
-                if(panel && panel.offset() && ($(window).scrollTop() + $(window).height() + 300 > panel.offset().top + panel.height())) {                                                                            
-                    site.vm.excursion.scrollExcursionList();               
+                var panel = $('#exlistbottompanel');
+                if(panel && panel.offset() && ($(window).scrollTop() + $(window).height() + 300 > panel.offset().top + panel.height())) {
+                    site.vm.excursion.scrollExcursionList();
                 }
             });
         }
@@ -1312,7 +1331,7 @@
         {
             <text>site.vm.excursion.categoryButtonClick();</text>
         }
-    });  
+    });
 
     var durationToString_Day = '@ExcursionStrings.ResourceManager.Get("DurationDay")',
         durationToString_Days = '@ExcursionStrings.ResourceManager.Get("DurationDays")',
@@ -1330,7 +1349,7 @@
                 result += days + ' ' + (days > 1 ? durationToString_Days : durationToString_Day) + ' ';
                 index = 1;
              }
-        
+
             var timeparts = dayparts[index].split(':');
             var hours = parseInt(timeparts[0]);
             if( hours > 0 ) {
@@ -1867,7 +1886,7 @@ background-size: 100% 100%;
             @if (!GuestService.Settings.IsHideDeparturePoints)
             {
             <div class="form-group  col-md-2 col-sm-3" style="padding-left:0px; padding-right:5px; float: right;" >					
-                <select data-bind="options: searchDeparturePoints, optionsText: 'name', value: $root.searchDeparturePoint, event: { change: searchDeparturePointChanged }" class="form-control" style="padding: 6px; width:100%; border: none;
+                <select id="departure_point" data-bind="options: searchDeparturePoints, optionsText: 'name', value: $root.searchDeparturePoint, event: { change: searchDeparturePointChanged }" class="form-control" style="padding: 6px; width:100%; border: none;
     box-shadow: none;">
                 </select>                                                                             
 			</div>									
