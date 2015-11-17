@@ -1,24 +1,51 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @{ 
+
+        var content = GuestService.Data.PartnerContentProvider.GetPartnerContent(Sm.System.Mvc.Language.UrlLanguage.CurrentLanguage);
+
+        if (content.Title != "")
+        {
+            ViewBag.Title = content.Title;
+        }
+
+        if (content.Description != "")
+        {
+            ViewBag.Description = content.Description;
+        }
+
+        if (content.Keywords != "")
+        {
+            ViewBag.Keywords = content.Keywords;
+        }
+
+    }
+    
+    @if (content.ImageName == "")
+    {
+        content.ImageName = "bg.png";
+    }
+
     @if (ViewBag.Description != null)
     {
-    <meta name="description" content="@ViewBag.Description" />
+        <meta name="description" content="@ViewBag.Description" />
     }
     @if (ViewBag.Keywords != null)
     {
-    <meta name="keywords" content="@ViewBag.Keywords" />
+        <meta name="keywords" content="@ViewBag.Keywords" />
     }
     <title>@ViewBag.Title</title>
+
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    @Styles.Render(string.Format("~/css/{0}/bootstrap.css", GuestService.Code.HttpPreferences.Current.VisualTheme))  
+    @Styles.Render(string.Format("~/css/{0}/bootstrap.css", GuestService.Code.HttpPreferences.Current.VisualTheme))
     @Styles.Render("~/css/datepicker.css")
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>      
+    <!--[if lt IE 9]>
           @Scripts.Render("~/js/html5shiv.js")
-          @Scripts.Render("~/js/respond.js")      
+          @Scripts.Render("~/js/respond.js")
     <![endif]-->
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -26,7 +53,7 @@
     <![endif]-->
     @Scripts.Render("~/js/jquery-1.9.1.js")
 
-    
+
     @RenderSection("head_styles", required: false)
 
     @Scripts.Render("~/js/sm.helpers.js")
@@ -35,9 +62,9 @@
     @Scripts.Render("~/js/knockout.mapping.js")
     @Scripts.Render("~/js/datepicker.js")
     @Scripts.Render("~/js/sm.site.service.js")
-    @Scripts.Render("~/js/sm.knockout.js") 
-    @Scripts.Render("~/js/moment.min.js") 
-    @Scripts.Render("~/js/history.min.js") 
+    @Scripts.Render("~/js/sm.knockout.js")
+    @Scripts.Render("~/js/moment.min.js")
+    @Scripts.Render("~/js/history.min.js")
 
     <script type="text/javascript">
         var baseimageurl = '@Url.Content("~/images/")';
@@ -48,7 +75,7 @@
             "use strict";
 
             site.vm.shoppingcart = function () {
-                var 
+                var
                 showOrderCount = ko.observable(false),
                 orderCount = ko.observable(0),
 
@@ -69,33 +96,46 @@
             } ();
 
             ko.applyBindings(site.vm.shoppingcart, document.getElementById("shoppingcart_container"));
-        });  
+        });
     </script>
     @RenderSection("head_scripts", required: false)
-  </head>
-  <body>  
+</head>
+<body>
 
-    @{ Html.RenderAction("PageSuperHeader", "customization"); }
-    @{ Html.RenderPartial(@"Controls\NavLanguageLogout"); }
-    @{ Html.RenderAction("PageSubHeader", "customization"); }
+    @{ 
+
+        Html.RenderAction("PageSuperHeader", "customization");
+        Html.RenderPartial(@"Controls\NavLanguageLogout");
+        Html.RenderAction("PageSubHeader", "customization");
+
+        if (content.Header == "")
+        {
+
+        }
+        else
+        {
+            WriteLiteral(content.Header);
+        }
+
+    }
     <div class="bk-container">
-        @RenderBody()        
+        @RenderBody()
     </div>
-    @Scripts.Render("~/js/bootstrap.min.js")  
+    @Scripts.Render("~/js/bootstrap.min.js")
 
-    @RenderSection("scripts", required: false)   
+    @RenderSection("scripts", required: false)
 
-<script>
+    <script>
 $(document).ready(function(){
 
-	
+
 $( "#ex_footer" )
   .mouseover(function() {
 	var num_bottom = $(this).css('bottom');
 	var footer_ok = $('#footer_ok').val();
 	if (num_bottom == '-90px' && footer_ok == 'ok' ) {
 	$(this).animate({bottom: '0px'});
-	} 
+	}
 
   })
   .mouseout(function() {
@@ -103,7 +143,7 @@ $( "#ex_footer" )
 	var footer_ok = $('#footer_ok').val();
 	if (num_bottom == '0px' && footer_ok == 'ok' ) {
 	$(this).animate({bottom: '-90px'});
-	} 
+	}
   });
 
 });
@@ -112,9 +152,9 @@ $( "#ex_footer" )
 
 
 
-</script> 
-	<input type="hidden" value="" id="footer_ok">
-    <div class="container bk-footer"  id="ex_footer" style="
+    </script>
+    <input type="hidden" value="" id="footer_ok">
+    <div class="container bk-footer" id="ex_footer" style="
 
     position: fixed;
     bottom: 0px;
@@ -124,44 +164,24 @@ $( "#ex_footer" )
   background-position: top center;
   height: 100px;
 z-index: 3;
-">    
-   
+">
+
         <div class="row">
             <div class="col-lg-12">
-			<div class="container">
-                  <div style="float: left;" class="footer_left">
-				  <table class="footer_tab">
-				  <tr>
-				  <td>
-				  <a href="#" >Countries </a><br>
-				  <a href="#" >Regions </a><br>
-				  <a href="#" >Cities</a>
-				  </td>
-				  <td>
-				  <a href="#" >About EXGO.COM</a><br>
-				  <a href="#" >Partners</a><br>
-				  <a href="#" >Became a partner</a><br>
-				  <a href="#" >Vacancies</a>
-				  </td>
-				  <td>
-				  <a href="#" >AQTerms amd conditions</a><br>
-				  <a href="#" >Privacy and cookies</a><br>
-				  <a href="#" >Contact</a>
-				  </td>
-				  </tr>
-				  </table>
-				  </div>
-				  
-				  <div style="float: right; vertical-align: top; padding: 10px; text-align: right;" class="footer_right">
-				  <span style="color: #ffbc23;"> Hotline DE: </span> 0800 - 154 75 875<br>
-				  <span style="color: #ffbc23;"> Hotline DE: </span> 0800 - 154 75 875<br>
-				  <img src="@Url.Content("~/images/new/logos_footer.png")">				  
-				  </div>
-
-                <!-- @{ Html.RenderAction("PageFooter", "customization"); } -->
-			</div>	
-            </div>   
+                <div class="container">
+                    @{ 
+                        if (content.Footer == "")
+                        {
+                            Html.RenderAction("PageFooter", "customization");
+                        }
+                        else
+                        {
+                            WriteLiteral(content.Footer);
+                        }
+                    }
+                </div>
+            </div>
         </div>
     </div>
-  </body>
+</body>
 </html>

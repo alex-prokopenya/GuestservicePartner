@@ -1830,10 +1830,10 @@ text-align: center;
 </script>
 <style>
 body {
-background-image: url(@Url.Content("~/images/new/bg.png"));
-background-size: 100% 100%;
-  background-attachment: fixed;
-}
+background-image: url(@Url.Content("~/images/new/@content.ImageName"));
+background -size: 100% 100%;
+            background-attachment: fixed;
+        }
 </style>
 
 
@@ -1848,10 +1848,10 @@ background-size: 100% 100%;
     color: #fff;
 ">@ViewBag.Title</h1>
           @if (GuestService.Settings.IsShowBreadCrumb)
-          {
+        {
           <ol class="breadcrumb" style="display: none;">   
             @if (GuestService.Settings.ServiceHomeUrl == null)
-            {
+        {
                 <li><a href="@Url.Action("index", "welcome")">@ExcursionStrings.ResourceManager.Get("GuestServiceTitle")</a></li>
             }
             else
@@ -1868,7 +1868,7 @@ background-size: 100% 100%;
     border-radius: 5px;
     text-align: center;
     box-shadow: 0 4px 4px rgba(0,0,0,0.5);
-	width: 60%;
+width: 60%;
   position: relative;
   left: 50%;
   margin-left: -30%;
@@ -1882,9 +1882,9 @@ background-size: 100% 100%;
 			</div>
 			
 			<button class="btn btn-primary" type="button" value="" data-bind="click: $root.catalogButtonClick" style="display: none;">@ExcursionStrings.ResourceManager.Get("NavigateExcursions")</button>	 
-			
+
             @if (!GuestService.Settings.IsHideDeparturePoints)
-            {
+{
             <div class="form-group  col-md-2 col-sm-3" style="padding-left:0px; padding-right:5px; float: right;" >					
                 <select id="departure_point" data-bind="options: searchDeparturePoints, optionsText: 'name', value: $root.searchDeparturePoint, event: { change: searchDeparturePointChanged }" class="form-control" style="padding: 6px; width:100%; border: none;
     box-shadow: none;">
@@ -1898,7 +1898,7 @@ background-size: 100% 100%;
             
     <div class="bk-category" data-bind="if: viewVisibilityCategorygroups" >
 	<!--
-        <h4 style="color:#777777;">@ExcursionStrings.ResourceManager.Get("SearchTitle")</h4>  
+        <h4 style="color:#777777;">@ExcursionStrings.ResourceManager.Get("SearchTitle")</h4>
 
         <div></div>
 
@@ -1996,8 +1996,8 @@ background-size: 100% 100%;
             </div>            
            
             <div class="col-lg-12">                            
-                <hr style="margin-top:0;"/>   
-            </div> 
+                <hr style="margin-top:0;"/>
+            </div>
         </div> <!-- /excursion title -->
 
         <div class="row bk-excursion">         
@@ -2080,7 +2080,7 @@ $("#ex_cont").ready(function(){
 					
                     <div data-bind="if: excursion.departures" class="bk-excursion-item-departure">                                                                  
                         <div style="color: #ffbc23;margin-bottom: 5px;">
-                            
+
                             <div data-bind="foreach: excursion.departures">                                                                                                                
                                     <span data-bind="text: name"></span>&nbsp;                                                                                                                                                                                
                             </div>              
@@ -2098,9 +2098,9 @@ $("#ex_cont").ready(function(){
 				
                     			
               <!--   <div class="col-lg-12">                            
-                    <hr style="margin-top:0;"/>   
+                    <hr style="margin-top:0;"/>
                 </div>
-				-->
+                -->
                 <!-- ko if: description().pictures && description().pictures.length == 1 -->
                 <div class="col-lg-8 bk-description-image" style=" padding-right:0;position: absolute;top: 0px; z-index: 1;width: 100%; padding-left: 0px; right: 0px;">                   
                      <!-- ko foreach: description().pictures -->
@@ -2115,13 +2115,13 @@ $("#ex_cont").ready(function(){
 					$('.fill').css({ "background-size": "100% 100%", "position": "fixed"});
 					$("#but_full_slider").hide();
 					$("#but_close_slider").show();
-					}
-					function fullscreenslider_close() {
+}
+function fullscreenslider_close() {
 					$('.fill').css({ "background-size": "cover", "position": "static"});
 					$('#ex_slider').css({ "z-index":"1", "position": "absolute", "top": "0px", "margin-top": "0px"});
 					$("#but_full_slider").show();
-					$("#but_close_slider").hide();					
-					}
+					$("#but_close_slider").hide();
+}
 					</script>	
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background-color: #000; z-index: 7;" id="ex_slider_back"></div>					
                 <div class="col-lg-8 bk-description-images" style="padding-right:0;position: absolute;top: 0px;width: 100%; z-index: 1;right: 0px;padding-left: 0px; margin-top: 0px; " id="ex_slider">                                       
