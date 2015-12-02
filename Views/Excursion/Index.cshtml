@@ -1,5 +1,4 @@
 ﻿@model GuestService.Models.Excursion.ExcursionIndexContext
-
 @{
     ViewBag.Title = ExcursionStrings.Get("Title");
 
@@ -13,7 +12,6 @@
 
 <script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>
 @Scripts.Render("~/js/markerwithlabel.js")
-
 
 @section scripts {
 <script type="text/javascript">
@@ -344,7 +342,6 @@
 
                          if(result.searchdeparture > 1 )
                              history.pushState({ }, def_title + '. ' + regionText , '@Url.Action("", "excursion")/' + regionText.toLowerCase() ); //!!!
-
 
                     } else {
                         result.searchdeparture = 0;
@@ -1829,15 +1826,12 @@ text-align: center;
 	-->
 </script>
 <style>
-body {
-background-image: url(@Url.Content("~/images/new/@content.ImageName"));
-background -size: 100% 100%;
+        body {
+            background-image: url(@Url.Content("~/images/new/@content.ImageName"));
+            background -size: 100% 100%;
             background-attachment: fixed;
         }
 </style>
-
-
-
 
 <div class="container" style="" id="excursion_container">    
    <div class="row bk-main">            
@@ -1880,7 +1874,6 @@ width: 60%;
     box-shadow: none;
 ">
 			</div>
-			
 			<button class="btn btn-primary" type="button" value="" data-bind="click: $root.catalogButtonClick" style="display: none;">@ExcursionStrings.ResourceManager.Get("NavigateExcursions")</button>	 
 
             @if (!GuestService.Settings.IsHideDeparturePoints)
@@ -1891,8 +1884,7 @@ width: 60%;
                 </select>                                                                             
 			</div>									
             }
-			<button class="btn btn-primary" type="button" value="" data-bind="click: $root.categoryButtonClick" style="display:none;">@ExcursionStrings.ResourceManager.Get("NavigateCategory")</button>				
-            			                            
+			<button class="btn btn-primary" type="button" value="" data-bind="click: $root.categoryButtonClick" style="display:none;">@ExcursionStrings.ResourceManager.Get("NavigateCategory")</button>				  
         </div>
     </div>  
             

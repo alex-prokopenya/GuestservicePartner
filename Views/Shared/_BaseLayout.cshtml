@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @{ 
-
         var content = GuestService.Data.PartnerContentProvider.GetPartnerContent(Sm.System.Mvc.Language.UrlLanguage.CurrentLanguage);
 
         if (content.Title != "")
@@ -21,7 +20,6 @@
         {
             ViewBag.Keywords = content.Keywords;
         }
-
     }
     
     @if (content.ImageName == "")
@@ -101,7 +99,6 @@
     @RenderSection("head_scripts", required: false)
 </head>
 <body>
-
     @{ 
 
         Html.RenderAction("PageSuperHeader", "customization");
@@ -126,33 +123,29 @@
     @RenderSection("scripts", required: false)
 
     <script>
-$(document).ready(function(){
+            $(document).ready(function(){
 
 
-$( "#ex_footer" )
-  .mouseover(function() {
-	var num_bottom = $(this).css('bottom');
-	var footer_ok = $('#footer_ok').val();
-	if (num_bottom == '-90px' && footer_ok == 'ok' ) {
-	$(this).animate({bottom: '0px'});
-	}
+            $( "#ex_footer" )
+              .mouseover(function() {
+	            var num_bottom = $(this).css('bottom');
+	            var footer_ok = $('#footer_ok').val();
+	            if (num_bottom == '-90px' && footer_ok == 'ok' ) {
+	            $(this).animate({bottom: '0px'});
+	            }
 
-  })
-  .mouseout(function() {
-	var num_bottom = $(this).css('bottom');
-	var footer_ok = $('#footer_ok').val();
-	if (num_bottom == '0px' && footer_ok == 'ok' ) {
-	$(this).animate({bottom: '-90px'});
-	}
-  });
+              })
+              .mouseout(function() {
+	            var num_bottom = $(this).css('bottom');
+	            var footer_ok = $('#footer_ok').val();
+	            if (num_bottom == '0px' && footer_ok == 'ok' ) {
+	            $(this).animate({bottom: '-90px'});
+	            }
+              });
 
-});
-
-
-
-
-
+            });
     </script>
+
     <input type="hidden" value="" id="footer_ok">
     <div class="container bk-footer" id="ex_footer" style="
 
